@@ -3,8 +3,12 @@ package com.hh99.hh5concertreservation.concert.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
+import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
+import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.presentation.dto.ConcertSchedulesResponse;
 import com.hh99.hh5concertreservation.concert.presentation.dto.ReftSeatsResponse;
+import com.hh99.hh5concertreservation.concert.presentation.dto.ReservationRequest;
+import com.hh99.hh5concertreservation.concert.presentation.dto.ReservationResponse;
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import org.apache.el.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -102,5 +106,32 @@ class ConcertControllerTest {
         ReftSeatsResponse response = mapper.readValue(contentAsString, ReftSeatsResponse.class);
         assert concertDescId == response.getConcertDescId();
         assert reservationState.equals(response.getSeatStates());
+    }
+
+    @DisplayName("success : 콘서트 자리 예약 성공")
+    @Test
+    void reservate() throws Exception {
+        Long userId = 1L;
+        Long concertId = 10L;
+        Long concertDescId = 11L;
+        Integer seatNo = 5;
+        Integer reservationState = 1;
+        ReservationRequest request = new ReservationRequest(userId, concertId, concertDescId, seatNo);
+        ReservationResult result = new ReservationResult(concertId, concertDescId, seatNo, reservationState);
+        given(concertService.reservation(any())).willReturn(result);
+        //when
+        ResultActions resultActions = mvc.perform(post("/concert/reservation")
+//                        .header("Token", "token1")
+//                        .header("UserId", "100")
+                        .content(mapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+        // then
+        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString();
+        ReservationResponse response = mapper.readValue(contentAsString, ReservationResponse.class);
+        assert concertDescId == response.getConcertDescId();
+        assert reservationState == response.getReservationState();
+
     }
 }
