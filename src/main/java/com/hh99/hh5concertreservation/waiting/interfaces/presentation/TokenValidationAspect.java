@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.waiting.presentation;
+package com.hh99.hh5concertreservation.waiting.interfaces.presentation;
 
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import jakarta.servlet.http.HttpServletRequest;

@@ -7,6 +7,8 @@ import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class QueueService {
@@ -36,5 +38,10 @@ public class QueueService {
         TokenEntity token = tokenRepo.findById(tokenId);
         token.setStatus(-1);
         tokenRepo.save(token);
+    }
+    
+    public void expireInactiveToken() {
+        List<TokenEntity> tokens = tokenRepo.findExpiredToken(System.currentTimeMillis());
+        tokens.forEach(i -> tokenRepo.save(i.setExpire()));
     }
 }

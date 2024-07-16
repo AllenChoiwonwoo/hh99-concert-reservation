@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.waiting.presentation.dto;
+package com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto;
 
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;

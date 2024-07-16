@@ -1,15 +1,14 @@
 package com.hh99.hh5concertreservation.waiting.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;
 import com.hh99.hh5concertreservation.waiting.application.dto.CreateTokenResult;
 import com.hh99.hh5concertreservation.waiting.application.usecase.QueueUsecase;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.TokenRequest;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.TokenResponse;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.WaitingOrderRequest;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.WaitingOrderResponse;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.TokenController;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.TokenRequest;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.TokenResponse;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.WaitingOrderRequest;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.WaitingOrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(controllers = {TokenController.class})
+@WebMvcTest(controllers = { TokenController.class})
 @AutoConfigureMockMvc
 class TokenControllerTest {
     @Autowired

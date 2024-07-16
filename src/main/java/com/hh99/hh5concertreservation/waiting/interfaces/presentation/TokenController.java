@@ -1,14 +1,14 @@
-package com.hh99.hh5concertreservation.waiting.presentation;
+package com.hh99.hh5concertreservation.waiting.interfaces.presentation;
 
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;
 import com.hh99.hh5concertreservation.waiting.application.dto.CreateTokenCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CreateTokenResult;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.TokenRequest;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.TokenResponse;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.TokenResponse;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.WaitingOrderResponse;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.TokenRequest;
 import com.hh99.hh5concertreservation.waiting.application.usecase.QueueUsecase;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.WaitingOrderRequest;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.WaitingOrderResponse;
+import com.hh99.hh5concertreservation.waiting.interfaces.presentation.dto.WaitingOrderRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

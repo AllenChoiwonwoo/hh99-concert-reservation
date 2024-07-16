@@ -21,7 +21,7 @@ public class TokenEntity {
     @Column(name = "user_id", nullable = false)
     private Long userId;
     @Column(name = "status")
-    private Integer status;
+    private Integer status; // 0: 대기중, 1: 진입 완료, -1: 만료
     @Column(name = "expired_at", nullable = false)
     private Long expiredAt;
 
@@ -39,5 +39,10 @@ public class TokenEntity {
     public Long makeExpiredTime() {
         // 5분 후가 만료시간
         return System.currentTimeMillis() + (5 * 60 * 1000);
+    }
+    
+    public TokenEntity setExpire() {
+        this.status = -1;
+        return this;
     }
 }
