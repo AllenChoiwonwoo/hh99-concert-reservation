@@ -1,6 +1,7 @@
 package com.hh99.hh5concertreservation.concert.presentation;
 
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
+import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
 import com.hh99.hh5concertreservation.concert.presentation.dto.ReftSeatsResponse;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -37,5 +39,12 @@ public class ConcertController {
     public ResponseEntity reservate(@RequestBody ReservationRequest request){
         ReservationResult result = concertService.reservation(request.toCommand());
         return ResponseEntity.ok(new ReservationResponse(result));
+    }
+
+    @GetMapping
+    public ResponseEntity findConcerts() {
+        List<ConcertEntity> concerts = concertService.findConcerts();
+        List<ConcertResponse> responses = concerts.stream().map(i -> new ConcertResponse(i)).collect(Collectors.toList());
+        return ResponseEntity.ok(responses);
     }
 }
