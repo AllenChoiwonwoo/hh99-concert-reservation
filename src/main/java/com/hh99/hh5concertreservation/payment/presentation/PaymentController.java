@@ -1,6 +1,7 @@
 package com.hh99.hh5concertreservation.payment.presentation;
 
 import com.hh99.hh5concertreservation.concert.domain.dto.PaymentResult;
+import com.hh99.hh5concertreservation.payment.application.PaymentUsecase;
 import com.hh99.hh5concertreservation.payment.presentation.dto.PaymentRequest;
 import com.hh99.hh5concertreservation.payment.presentation.dto.PaymentResponse;
 import com.hh99.hh5concertreservation.payment.application.PaymentService;
@@ -15,11 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/payments")
 public class PaymentController {
-    private final PaymentService paymentService;
+    private final PaymentUsecase paymentUsecase;
     
     @PostMapping
     public ResponseEntity payment(@RequestBody PaymentRequest request){
-        PaymentResult result = paymentService.payment(request.toCommand());
+        PaymentResult result = paymentUsecase.payment(request.toCommand());
         return ResponseEntity.ok(new PaymentResponse(result));
     }
 }
