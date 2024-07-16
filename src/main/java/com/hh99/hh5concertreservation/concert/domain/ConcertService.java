@@ -1,12 +1,7 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
-import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
-import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
-import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
-import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
-import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
+import com.hh99.hh5concertreservation.concert.domain.dto.*;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -41,8 +36,10 @@ public class ConcertService {
 
 
     public ReservationResult reservation(ReservationCommand command) {
-        ReservationEntity reservation = concertRepository.checkSeat(command.getConcertDescId(), command.getSeatNo());
+//        ReservationEntity reservation = concertRepository.checkSeat(command.getConcertDescId(), command.getSeatNo());
 
         return null;
     }
+    
+
 }

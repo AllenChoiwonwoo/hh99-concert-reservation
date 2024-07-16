@@ -3,14 +3,9 @@ package com.hh99.hh5concertreservation.concert.presentation;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
-import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
-import com.hh99.hh5concertreservation.concert.presentation.dto.ConcertSchedulesResponse;
-import com.hh99.hh5concertreservation.concert.presentation.dto.ReftSeatsResponse;
-import com.hh99.hh5concertreservation.concert.presentation.dto.ReservationRequest;
-import com.hh99.hh5concertreservation.concert.presentation.dto.ReservationResponse;
+import com.hh99.hh5concertreservation.concert.presentation.dto.*;
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
-import org.apache.el.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,6 +42,12 @@ class ConcertControllerTest {
     MockMvc mvc;
     @Autowired
     ObjectMapper mapper;
+    
+    Long userId = 1L;
+    Long concertId = 10L;
+    Long concertDescId = 11L;
+    Integer seatNo = 5;
+    Integer reservationState = 1;
 
     @DisplayName("success : 콘서트 스케줄 조회")
     @Test
@@ -111,11 +112,7 @@ class ConcertControllerTest {
     @DisplayName("success : 콘서트 자리 예약 성공")
     @Test
     void reservate() throws Exception {
-        Long userId = 1L;
-        Long concertId = 10L;
-        Long concertDescId = 11L;
-        Integer seatNo = 5;
-        Integer reservationState = 1;
+        //given
         ReservationRequest request = new ReservationRequest(userId, concertId, concertDescId, seatNo);
         ReservationResult result = new ReservationResult(concertId, concertDescId, seatNo, reservationState);
         given(concertService.reservation(any())).willReturn(result);
@@ -134,4 +131,26 @@ class ConcertControllerTest {
         assert reservationState == response.getReservationState();
 
     }
+//    @DisplayName("success : 결제 성공")
+//    @Test
+//    void payment() throws Exception {
+//        //given
+//        ReservationRequest request = new ReservationRequest(userId, concertId, concertDescId, seatNo);
+////        PaymentResponse result = new PaymentResponse(userId, concertId, concertDescId, seatNo, reservationState);
+//        given(concertService.payment(any())).willReturn(null);
+//
+//
+//
+//        //when
+//        ResultActions resultActions = mvc.perform(post("/concert/payment")
+//                //                        .header("Token", "token1")
+//                //                        .header("UserId", "100")
+//                .content(mapper.writeValueAsString(request))
+//                .contentType(MediaType.APPLICATION_JSON)
+//        );
+//        // then
+//        MvcResult mvcResult = resultActions.andExpect(status().isOk()).andReturn();
+//        String contentAsString = mvcResult.getResponse().getContentAsString();
+//        PaymentResponse response = mapper.readValue(contentAsString, PaymentResponse.class);
+//    }
 }
