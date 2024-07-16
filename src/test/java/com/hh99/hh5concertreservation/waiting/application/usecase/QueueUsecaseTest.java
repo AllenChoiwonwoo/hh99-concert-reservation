@@ -1,11 +1,9 @@
 package com.hh99.hh5concertreservation.waiting.application.usecase;
 
-import com.hh99.hh5concertreservation.concert.domain.ConcertService;
 import com.hh99.hh5concertreservation.waiting.application.dto.CreateTokenCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CreateTokenResult;
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
-import com.hh99.hh5concertreservation.waiting.presentation.dto.WaitingOrderResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +11,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
