@@ -1,8 +1,6 @@
 package com.hh99.hh5concertreservation.concert.presentation;
 
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
-import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
-import com.hh99.hh5concertreservation.concert.presentation.dto.ReftSeatsResponse;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
 import com.hh99.hh5concertreservation.concert.presentation.dto.ConcertSchedulesResponse;
