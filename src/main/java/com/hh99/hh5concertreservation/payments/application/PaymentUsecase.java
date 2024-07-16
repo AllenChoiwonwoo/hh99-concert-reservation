@@ -18,7 +18,7 @@ public class PaymentUsecase {
 
     @Transactional
     public PaymentResult pay(PaymentCommand command) {
-        ReservationEntity reservation = concertService.checkSeat(command.getConcertDescId(), command.getSeatNo(), 1);
+        ReservationEntity reservation = concertService.findTempRevervation(command.getConcertDescId(), command.getSeatNo(), 1);
         Long price = concertService.findPrice(command.getConcertDescId());
         ReservationEntity reservationEntity = concertService.confirmReservation(reservation);
         userService.subtractPoint(command.getUserId(), price);

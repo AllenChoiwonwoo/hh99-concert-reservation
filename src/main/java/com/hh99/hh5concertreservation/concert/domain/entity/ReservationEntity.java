@@ -23,7 +23,7 @@ public class ReservationEntity {
     @Column(name = "seat_no")
     private Integer seatNo;
     @Column(name = "status")
-    private Integer status; // 0  공석, 1 임시 예약, 2 예약 완료
+    private Integer status; // 0  공석, 1 임시 예약, 2 예약 완료 ,-1 만료
 
     public ReservationEntity(Long userId, Long concertDescId, Integer seatNo) {
         this.userId = userId;
@@ -35,5 +35,11 @@ public class ReservationEntity {
 
     public void setConfirm() {
         this.status = 2;
+    }
+
+    public void validate() {
+        if (this.status == 1 && this.expiredAt < System.currentTimeMillis()) {
+            this.status = -1;
+        }
     }
 }

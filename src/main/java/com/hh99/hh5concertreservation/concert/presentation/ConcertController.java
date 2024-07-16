@@ -37,7 +37,7 @@ public class ConcertController {
 
     @PostMapping("/reservation")
     public ResponseEntity reservate(@RequestBody ReservationRequest request){
-        ReservationResult result = concertService.reservation(request.toCommand());
+        ReservationResult result = concertService.reserve(request.toCommand());
         return ResponseEntity.ok(new ReservationResponse(result));
     }
 

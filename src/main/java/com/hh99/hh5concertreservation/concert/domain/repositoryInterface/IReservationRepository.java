@@ -13,7 +13,9 @@ public interface IReservationRepository {
 
     List<SeatsInfo> findReftSeats(Long concertScheduleId);
 
-    Optional<ReservationEntity> checkSeat(Long concertDescId, Integer seatNo);
+    Optional<ReservationEntity> findByConsertOptionIdAndSeatNo(Long concertDescId, Integer seatNo);
 
-    Optional<ReservationEntity> checkSeat(Long concertDescId, Integer seatNo, Integer status);
+    Optional<ReservationEntity> findByConsertOptionIdAndSeatNo(Long concertDescId, Integer seatNo, Integer status);
+
+    List<ReservationEntity> findAllTempRevervation(int status);
 }
