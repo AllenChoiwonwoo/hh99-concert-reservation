@@ -40,11 +40,4 @@ public class ConcertController {
         ReservationResult result = concertService.reserve(request.toCommand());
         return ResponseEntity.ok(new ReservationResponse(result));
     }
-
-    @GetMapping
-    public ResponseEntity findConcerts() {
-        List<ConcertEntity> concerts = concertService.findConcerts();
-        List<ConcertResponse> responses = concerts.stream().map(i -> new ConcertResponse(i)).collect(Collectors.toList());
-        return ResponseEntity.ok(responses);
-    }
 }

@@ -4,13 +4,16 @@ import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
-import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
+import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
+
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class ConcertService {
@@ -33,7 +36,7 @@ public class ConcertService {
     }
 
     public Map<Integer, Integer> findLeftSeats(Long concertScheduleId) {
-        List<SeatsInfo> reftSeats = reservationRepository.findReftSeats(concertScheduleId);
+        List<SeatsInfo> reftSeats = concertRepository.findReftSeats(concertScheduleId);
         reftSeats.forEach(i -> {
             if (i.getState() > 0) seatState.put(i.getSeatNo(), 1);
         });
@@ -41,16 +44,8 @@ public class ConcertService {
     }
 
 
-    public ReservationResult reserve(ReservationCommand command) {
-        validateSeat(command.getConcertDescId(), command.getSeatNo());
-        ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo());
-        ReservationEntity saved = reservationRepository.save(reservationEntity);
-        return new ReservationResult(command.getConcertId(), saved);
-    }
-
-    public void validateSeat(Long concertDescId, Integer seatNo) {
-        if(seatState.containsKey(seatNo))
-            throw new InputMismatchException("존제하지 않는 좌석입니다.");
+    public ReservationResult reservation(ReservationCommand command) {
+        ReservationEntity reservation = concertRepository.checkSeat(command.getConcertDescId(), command.getSeatNo());
 
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo);
         if (reservationEntity.isEmpty()){
