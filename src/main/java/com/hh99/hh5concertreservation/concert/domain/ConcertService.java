@@ -1,12 +1,14 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
 import com.hh99.hh5concertreservation.concert.domain.dto.*;
+import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class ConcertService {
@@ -41,5 +43,8 @@ public class ConcertService {
         return null;
     }
     
-
+    
+    public Optional<ReservationEntity> findReservation(Long concertDescId , Integer seatNo) {
+        return null;
+    }
 }
