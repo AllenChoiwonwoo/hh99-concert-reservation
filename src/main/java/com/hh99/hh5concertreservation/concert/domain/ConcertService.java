@@ -11,9 +11,7 @@ import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReserv
 
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ConcertService {
@@ -42,10 +40,17 @@ public class ConcertService {
         });
         return seatState;
     }
+    
+    public ReservationResult reserve(ReservationCommand command) {
+        validateSeat(command.getConcertDescId(), command.getSeatNo());
+    ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo());
+    ReservationEntity saved = reservationRepository.save(reservationEntity);
+        return new ReservationResult(command.getConcertId(), saved);
+}
 
-
-    public ReservationResult reservation(ReservationCommand command) {
-        ReservationEntity reservation = concertRepository.checkSeat(command.getConcertDescId(), command.getSeatNo());
+public void validateSeat(Long concertDescId, Integer seatNo) {
+    if(seatState.containsKey(seatNo) == false)
+        throw new InputMismatchException("존제하지 않는 좌석입니다.");
 
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo);
         if (reservationEntity.isEmpty()){
@@ -56,6 +61,7 @@ public class ConcertService {
             throw new IllegalStateException("이미 예약된 좌석입니다.");
         }
     }
+    
     public ReservationEntity findTempRevervation(Long concertDescId, Integer seatNo, Integer status) {
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo, status);
         if (reservationEntity.isEmpty()) {
