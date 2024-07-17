@@ -1,14 +1,15 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
+import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
+import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
-import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
+import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
-
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -34,13 +35,13 @@ public class ConcertService {
     }
 
     public Map<Integer, Integer> findLeftSeats(Long concertScheduleId) {
-        List<SeatsInfo> reftSeats = concertRepository.findReftSeats(concertScheduleId);
+        List<SeatsInfo> reftSeats = reservationRepository.findReftSeats(concertScheduleId);
         reftSeats.forEach(i -> {
             if (i.getState() > 0) seatState.put(i.getSeatNo(), 1);
         });
         return seatState;
     }
-    
+
     public ReservationResult reserve(ReservationCommand command) {
         validateSeat(command.getConcertDescId(), command.getSeatNo());
     ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo());
@@ -48,9 +49,23 @@ public class ConcertService {
         return new ReservationResult(command.getConcertId(), saved);
 }
 
-public void validateSeat(Long concertDescId, Integer seatNo) {
-    if(seatState.containsKey(seatNo) == false)
-        throw new InputMismatchException("존제하지 않는 좌석입니다.");
+    public void checkSeat(Long concertDescId, Integer seatNo) {
+        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo);
+        if (reservationEntity.isPresent()) {
+            throw new IllegalStateException("이미 예약된 좌석입니다.");
+        }
+    }
+    public ReservationEntity checkSeat(Long concertDescId, Integer seatNo, Integer status) {
+        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo, status);
+        if (reservationEntity.isEmpty()) {
+            throw new IllegalStateException("임시 예약되지 않은 좌석입니다.");
+        }
+        return reservationEntity.get();
+    }
+
+    public void validateSeat(Long concertDescId, Integer seatNo) {
+        if(seatState.containsKey(seatNo) == false)
+            throw new InputMismatchException("존제하지 않는 좌석입니다.");
 
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo);
         if (reservationEntity.isEmpty()){
@@ -61,7 +76,7 @@ public void validateSeat(Long concertDescId, Integer seatNo) {
             throw new IllegalStateException("이미 예약된 좌석입니다.");
         }
     }
-    
+
     public ReservationEntity findTempRevervation(Long concertDescId, Integer seatNo, Integer status) {
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo, status);
         if (reservationEntity.isEmpty()) {
@@ -89,5 +104,10 @@ public void validateSeat(Long concertDescId, Integer seatNo) {
             reservation.validate();
             reservationRepository.save(reservation);
         }
+    }
+
+
+    public Optional<ReservationEntity> findReservation(Long concertDescId , Integer seatNo) {
+        return null;
     }
 }
