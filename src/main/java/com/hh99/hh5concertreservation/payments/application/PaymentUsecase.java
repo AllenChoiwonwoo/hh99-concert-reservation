@@ -4,7 +4,6 @@ import com.hh99.hh5concertreservation.concert.domain.ConcertService;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.payments.domain.PaymentEntity;
 import com.hh99.hh5concertreservation.payments.domain.PaymentService;
-import com.hh99.hh5concertreservation.user.domain.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

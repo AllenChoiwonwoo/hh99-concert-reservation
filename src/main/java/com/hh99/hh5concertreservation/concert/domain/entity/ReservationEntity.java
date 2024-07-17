@@ -20,5 +20,4 @@ public class ReservationEntity {
     private Long concertId;
     @Column(name = "reservation_open_at")
     private String reservationOpenAt;
-    @Column(name = "")
 }
