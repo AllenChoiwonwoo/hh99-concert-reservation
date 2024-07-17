@@ -16,6 +16,8 @@ public class ReservationEntity {
     private Long id;
     @Column(name = "user_id")
     private Long userId;
+    @Column(name = "concert_id")
+    private Long concertId;
     @Column(name = "concert_option_id")
     private Long concertOptionId;
     @Column(name = "expired_at")

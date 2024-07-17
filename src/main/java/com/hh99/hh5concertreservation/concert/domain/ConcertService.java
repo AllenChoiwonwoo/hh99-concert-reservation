@@ -1,15 +1,11 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
-import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
-import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
-import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
-import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
