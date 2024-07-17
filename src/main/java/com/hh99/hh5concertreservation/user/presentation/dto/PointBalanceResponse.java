@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PointBalanceResponse {
-    private Integer balance;
+    private Long balance;
     
     public PointBalanceResponse(PointResult result) {
         this.balance = result.getBalance();

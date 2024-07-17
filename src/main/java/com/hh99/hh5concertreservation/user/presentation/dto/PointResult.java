@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class PointResult {
     private Long userId;
-    private Integer Balance;
+    private Long Balance;
 }
