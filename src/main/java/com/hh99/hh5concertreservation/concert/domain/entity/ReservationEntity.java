@@ -39,9 +39,11 @@ public class ReservationEntity {
         this.status = 2;
     }
 
-    public void validate() {
+    public boolean validate() {
         if (this.status == 1 && this.expiredAt < System.currentTimeMillis()) {
             this.status = -1;
+            return true;
         }
+        return false;
     }
 }

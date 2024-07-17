@@ -6,6 +6,7 @@ import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
+import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -40,24 +41,24 @@ public class ConcertService {
 
     public ReservationResult reserve(ReservationCommand command) {
         validateSeat(command.getConcertDescId(), command.getSeatNo());
-    ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo());
-    ReservationEntity saved = reservationRepository.save(reservationEntity);
+        ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo());
+        ReservationEntity saved = reservationRepository.save(reservationEntity);
         return new ReservationResult(command.getConcertId(), saved);
-}
+    }
 
-    public void checkSeat(Long concertDescId, Integer seatNo) {
-        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo);
-        if (reservationEntity.isPresent()) {
-            throw new IllegalStateException("이미 예약된 좌석입니다.");
-        }
-    }
-    public ReservationEntity checkSeat(Long concertDescId, Integer seatNo, Integer status) {
-        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo, status);
-        if (reservationEntity.isEmpty()) {
-            throw new IllegalStateException("임시 예약되지 않은 좌석입니다.");
-        }
-        return reservationEntity.get();
-    }
+//    public void checkSeat(Long concertDescId, Integer seatNo) {
+//        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo);
+//        if (reservationEntity.isPresent()) {
+//            throw new IllegalStateException("이미 예약된 좌석입니다.");
+//        }
+//    }
+//    public ReservationEntity checkSeat(Long concertDescId, Integer seatNo, Integer status) {
+//        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo, status);
+//        if (reservationEntity.isEmpty()) {
+//            throw new IllegalStateException("임시 예약되지 않은 좌석입니다.");
+//        }
+//        return reservationEntity.get();
+//    }
 
     public void validateSeat(Long concertDescId, Integer seatNo) {
         if(seatState.containsKey(seatNo) == false)
@@ -90,17 +91,26 @@ public class ConcertService {
         return reservationRepository.save(reservation);
     }
 
-    public List<ConcertEntity> findConcerts() {
-        return concertRepository.findConserts();
-    }
+//    public List<ConcertEntity> findConcerts() {
+//        return concertRepository.findConserts();
+//    }
 
     public void expireReservation() {
         List<ReservationEntity> list = reservationRepository.findAllTempRevervation(1);
         for (ReservationEntity reservation : list) {
-            reservation.validate();
-            reservationRepository.save(reservation);
+
+            boolean isExpired = reservation.validate();
+            if (isExpired) {
+                reservationRepository.save(reservation);
+            }
         }
     }
+
+//    public void updateExpireSta(Long reservationId){
+//        ReservationEntity reservation=  revationRepository.findById(reservationId);
+//        if (reservation.validate()) reservationRepository.save()
+//
+//    }
 
 
     public Optional<ReservationEntity> findReservation(Long concertDescId , Integer seatNo) {
