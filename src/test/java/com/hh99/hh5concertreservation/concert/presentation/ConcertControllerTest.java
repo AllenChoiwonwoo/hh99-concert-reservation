@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
-import com.hh99.hh5concertreservation.concert.presentation.dto.*;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.ConcertController;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ConcertSchedulesResponse;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReftSeatsResponse;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReservationRequest;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReservationResponse;
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -57,7 +61,7 @@ class ConcertControllerTest {
         List<ConcertScheduleInfo> schedules = new ArrayList<>();
         schedules.add(new ConcertScheduleInfo(11L, "2024-08-12 18:00:00"));
         given(concertService.findSchedules(concertId)).willReturn(schedules);
-        given(queueService.isValidate(anyLong(), anyString())).willReturn(false);
+        given(queueService.isValidate(anyString())).willReturn(false);
 
         //when
         ResultActions resultActions = mvc.perform(get("/concert/schedules")

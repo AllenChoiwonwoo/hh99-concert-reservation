@@ -33,6 +33,7 @@ class ConcertServiceTest {
     Long concertId = 10L;
     Long concertDescId = 15L;
     int seatNo = 10;
+    int price = 100000;
 
 
     @Test
@@ -62,8 +63,8 @@ class ConcertServiceTest {
     @Test
     void reserve() {
         //given
-        ReservationCommand command = new ReservationCommand(userId,concertId, concertDescId, seatNo);
-        ReservationEntity entity = new ReservationEntity(userId, concertDescId, seatNo);
+        ReservationCommand command = new ReservationCommand(userId,concertId, concertDescId, seatNo,price);
+        ReservationEntity entity = new ReservationEntity(userId, concertDescId, seatNo,price);
         given(reservationRepository.save(any())).willReturn(entity);
         //when
         ReservationResult result = concertService.reserve(command);
@@ -76,9 +77,8 @@ class ConcertServiceTest {
     @Test
     void checkSeat() {
         //given
-        given(reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo)).willReturn(Optional.of(new ReservationEntity(userId, concertDescId, seatNo)));
+        given(reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo)).willReturn(Optional.of(new ReservationEntity(userId, concertDescId, seatNo, price)));
         //when
-        // throw new IllegalStateException("이미 예약된 좌석입니다.") 에 대한 검증로직
         IllegalStateException illegalStateException = assertThrows(IllegalStateException.class, () -> concertService.validateSeat(concertDescId, seatNo));
         assertEquals("이미 예약된 좌석입니다.", illegalStateException.getMessage());
     }

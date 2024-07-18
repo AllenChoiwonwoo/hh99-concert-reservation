@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final PointService pointService;
     
-    @PutMapping("/{userId}")
+    @PutMapping("/{userId}/point")
     public ResponseEntity charge(@PathVariable Long userId, @RequestBody Long amount){
         PointResult result = pointService.charge(userId, amount);
         return ResponseEntity.ok(new PointBalanceResponse(result));
     }
-    @GetMapping("/{userId}")
+    @GetMapping("/{userId}/point")
     public ResponseEntity getPoint(@PathVariable Long userId){
         PointResult result = pointService.getPoint(userId);
         return ResponseEntity.ok(new PointBalanceResponse(result));

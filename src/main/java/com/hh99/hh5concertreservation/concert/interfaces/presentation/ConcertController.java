@@ -1,8 +1,10 @@
-package com.hh99.hh5concertreservation.concert.presentation;
+package com.hh99.hh5concertreservation.concert.interfaces.presentation;
 
-import com.hh99.hh5concertreservation.concert.domain.dto.PaymentResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
-import com.hh99.hh5concertreservation.concert.presentation.dto.*;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ConcertSchedulesResponse;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReftSeatsResponse;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReservationRequest;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReservationResponse;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor

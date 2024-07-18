@@ -13,4 +13,5 @@ public class ReservationCommand {
     private Long concertId;
     private Long concertDescId;
     private Integer seatNo;
+    private Integer price;
 }

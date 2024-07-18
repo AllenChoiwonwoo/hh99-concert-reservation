@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.concert.scheduler;
+package com.hh99.hh5concertreservation.concert.interfaces.scheduler;
 
 
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;

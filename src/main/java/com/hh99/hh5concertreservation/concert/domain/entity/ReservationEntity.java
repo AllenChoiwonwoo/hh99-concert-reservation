@@ -26,13 +26,23 @@ public class ReservationEntity {
     private Integer seatNo;
     @Column(name = "status")
     private Integer status; // 0  공석, 1 임시 예약, 2 예약 완료 ,-1 만료
+    @Column(name = "price")
+    private Integer price;
 
-    public ReservationEntity(Long userId, Long concertDescId, Integer seatNo) {
+//    public ReservationEntity(Long userId, Long concertDescId, Integer seatNo) {
+//        this.userId = userId;
+//        this.concertOptionId = concertDescId;
+//        this.seatNo = seatNo;
+//        this.status = 1;
+//        this.expiredAt = System.currentTimeMillis() + 1000 * 60 * 5;
+//    }
+    public ReservationEntity(Long userId, Long concertDescId, Integer seatNo, Integer price) {
         this.userId = userId;
         this.concertOptionId = concertDescId;
         this.seatNo = seatNo;
         this.status = 1;
         this.expiredAt = System.currentTimeMillis() + 1000 * 60 * 5;
+        this.price = price;
     }
 
     public void setConfirm() {

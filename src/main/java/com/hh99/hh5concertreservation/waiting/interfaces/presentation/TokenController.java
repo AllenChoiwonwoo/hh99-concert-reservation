@@ -34,11 +34,4 @@ public class TokenController {
         return ResponseEntity.ok(new WaitingOrderResponse(checkStateResult));
     }
 
-    /*
-    가서 요리 하면 올라갈게
-    주인주가 밥해줘?
-    뭐해줘?
-
-     */
-
 }

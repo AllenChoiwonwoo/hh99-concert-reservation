@@ -9,8 +9,9 @@ import org.springframework.stereotype.Service;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
     public PaymentEntity savePayment(ReservationEntity reservationEntity, Long price) {
-        PaymentEntity paymentEntity = PaymentEntity.builder()
-                .userId(reservationEntity.getUserId()).status(2).reservationId(reservationEntity.getId()).amount(price).build();
+        PaymentEntity paymentEntity = PaymentEntity.createActivePaymanet(reservationEntity.getUserId(), reservationEntity.getId(), price);
+//        PaymentEntity paymentEntity = PaymentEntity.builder()
+//                .userId(reservationEntity.getUserId()).status(2).reservationId(reservationEntity.getId()).amount(price).build();
         PaymentEntity payment = paymentRepository.save(paymentEntity);
         return payment;
     }

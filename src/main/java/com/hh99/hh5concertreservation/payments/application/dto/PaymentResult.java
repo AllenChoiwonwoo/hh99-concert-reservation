@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.payments.application;
+package com.hh99.hh5concertreservation.payments.application.dto;
 
 import com.hh99.hh5concertreservation.payments.domain.PaymentEntity;
 import lombok.AllArgsConstructor;

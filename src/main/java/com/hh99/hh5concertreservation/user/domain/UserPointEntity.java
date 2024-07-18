@@ -19,8 +19,9 @@ public class UserPointEntity {
     @Column(name = "balance", nullable = false)
     private Long balance;
     
-    public void subtract(Long price) {
+    public UserPointEntity subtract(Long price) {
         this.balance -= price;
+        return this;
     }
     
     //    public UserPointEntity(Long userId, Long valance) {

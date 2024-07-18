@@ -40,9 +40,15 @@ public class TokenEntity {
         // 5분 후가 만료시간
         return System.currentTimeMillis() + (5 * 60 * 1000);
     }
+
     
     public TokenEntity setExpire() {
         this.status = -1;
+        return this;
+    }
+
+    public TokenEntity renewExpiredAt() {
+        this.expiredAt = this.makeExpiredTime();
         return this;
     }
 }

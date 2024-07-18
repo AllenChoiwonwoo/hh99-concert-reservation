@@ -18,8 +18,17 @@ public class PaymentEntity {
     private Long userId;
     @Column(name = "reservation_id")
     private Long reservationId;
-    @Column(name = "status")
+    @Column(name = "status") // 오디너리,
     private Integer status;
     @Column(name = "amount")
     private Long amount;
+
+    public static PaymentEntity createActivePaymanet(Long userId, Long id, Long price) {
+        return PaymentEntity.builder()
+                .userId(userId)
+                .reservationId(id)
+                .status(2)
+                .amount(price)
+                .build();
+    }
 }

@@ -22,26 +22,25 @@ public class QueueService {
     }
 
     public CheckStateResult checkState(CheckStateCommand command) {
-        TokenEntity token = tokenRepo.findToken();
+        TokenEntity token = tokenRepo.findToken(command.getToken());
         if (token.getStatus() == 1) {
             return CheckStateResult.builder().status(token.getStatus()).waitingCount(0L).build();
         }
+        tokenRepo.save(token.renewExpiredAt());
         Long lastEnteredTokenId = tokenRepo.findLastEnteredTokenId(); // FIXME : lastEnteredTokenId 라는 변수명을 생성자에서는 다르게 쓰는게 맞는 방식인가? (생성자는 순수 함수로를 의도 )
         return new CheckStateResult(token.getId(), lastEnteredTokenId);
     }
 
-    public boolean isValidate(Long userId, String tokenStr) {
-        return tokenRepo.findByIdAndUserId(userId, tokenStr).isPresent();
+    public boolean isValidate(String tokenStr) {
+        return tokenRepo.findByToken(tokenStr).isPresent();
     }
 
     public void expireToken(Long tokenId) {
         TokenEntity token = tokenRepo.findById(tokenId);
-        token.setStatus(-1);
-        tokenRepo.save(token);
+        tokenRepo.save(token.setExpire());
     }
     
     public void expireInactiveToken() {
-        List<TokenEntity> tokens = tokenRepo.findExpiredToken(System.currentTimeMillis());
-        tokens.forEach(i -> tokenRepo.save(i.setExpire()));
+        tokenRepo.expireInactiveToken(System.currentTimeMillis());
     }
 }

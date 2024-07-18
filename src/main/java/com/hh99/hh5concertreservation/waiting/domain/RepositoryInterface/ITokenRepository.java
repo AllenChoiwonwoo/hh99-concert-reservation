@@ -10,15 +10,14 @@ import java.util.Optional;
 public interface ITokenRepository {
     TokenEntity add(TokenEntity newToken);
 
-    TokenEntity findToken();
+    TokenEntity findToken(String token);
 
     Long findLastEnteredTokenId();
 
-    Optional<TokenEntity> findByIdAndUserId(Long userId, String tokenStr);
+    Optional<TokenEntity> findByToken(String tokenStr);
 
     TokenEntity findById(Long tokenId);
 
     void save(TokenEntity token);
-    
-    List<TokenEntity> findExpiredToken(long currentTimeMillis);
+    void expireInactiveToken(long currentTimeMillis);
 }

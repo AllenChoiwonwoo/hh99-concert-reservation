@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.concert.presentation.dto;
+package com.hh99.hh5concertreservation.concert.interfaces.presentation.dto;
 
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import lombok.Data;

@@ -24,6 +24,11 @@ public class QueueUsecase {
         CheckStateResult checkStateResult = queueService.checkState(command);
         return checkStateResult;
     }
+
+    public boolean validateToken(String token) {
+        queueService.isValidate(token);
+        return false;
+    }
 }
 /*
 데이터 베이스 만을 활용해서

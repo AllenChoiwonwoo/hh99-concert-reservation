@@ -1,6 +1,6 @@
-package com.hh99.hh5concertreservation.payments.presentation;
+package com.hh99.hh5concertreservation.payments.presentation.dto;
 
-import com.hh99.hh5concertreservation.payments.application.PaymentResult;
+import com.hh99.hh5concertreservation.payments.application.dto.PaymentResult;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

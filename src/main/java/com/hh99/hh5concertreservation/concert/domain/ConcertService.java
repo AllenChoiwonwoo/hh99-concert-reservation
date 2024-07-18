@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
+import com.hh99.hh5concertreservation.common.CustomException;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
@@ -41,28 +42,14 @@ public class ConcertService {
 
     public ReservationResult reserve(ReservationCommand command) {
         validateSeat(command.getConcertDescId(), command.getSeatNo());
-        ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo());
+        ReservationEntity reservationEntity = new ReservationEntity(command.getUserId(),command.getConcertDescId(), command.getSeatNo(), command.getPrice());
         ReservationEntity saved = reservationRepository.save(reservationEntity);
         return new ReservationResult(command.getConcertId(), saved);
     }
 
-//    public void checkSeat(Long concertDescId, Integer seatNo) {
-//        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo);
-//        if (reservationEntity.isPresent()) {
-//            throw new IllegalStateException("이미 예약된 좌석입니다.");
-//        }
-//    }
-//    public ReservationEntity checkSeat(Long concertDescId, Integer seatNo, Integer status) {
-//        Optional<ReservationEntity> reservationEntity = reservationRepository.checkSeat(concertDescId, seatNo, status);
-//        if (reservationEntity.isEmpty()) {
-//            throw new IllegalStateException("임시 예약되지 않은 좌석입니다.");
-//        }
-//        return reservationEntity.get();
-//    }
-
     public void validateSeat(Long concertDescId, Integer seatNo) {
         if(seatState.containsKey(seatNo) == false)
-            throw new InputMismatchException("존제하지 않는 좌석입니다.");
+            throw new CustomException(CustomException.ErrorEnum.NO_SEAT);
 
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo);
         if (reservationEntity.isEmpty()){
@@ -70,14 +57,14 @@ public class ConcertService {
         }
         ReservationEntity entity = reservationEntity.get();
         if (entity.getStatus() == 1 || entity.getStatus() == 2) { // 임시예약 || 예약확정
-            throw new IllegalStateException("이미 예약된 좌석입니다.");
+            throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT);
         }
     }
 
     public ReservationEntity findTempRevervation(Long concertDescId, Integer seatNo, Integer status) {
         Optional<ReservationEntity> reservationEntity = reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo, status);
         if (reservationEntity.isEmpty()) {
-            throw new IllegalStateException("임시 예약되지 않은 좌석입니다.");
+            throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT);
         }
         return reservationEntity.get();
     }
@@ -91,10 +78,6 @@ public class ConcertService {
         return reservationRepository.save(reservation);
     }
 
-//    public List<ConcertEntity> findConcerts() {
-//        return concertRepository.findConserts();
-//    }
-
     public void expireReservation() {
         List<ReservationEntity> list = reservationRepository.findAllTempRevervation(1);
         for (ReservationEntity reservation : list) {
@@ -104,16 +87,5 @@ public class ConcertService {
                 reservationRepository.save(reservation);
             }
         }
-    }
-
-//    public void updateExpireSta(Long reservationId){
-//        ReservationEntity reservation=  revationRepository.findById(reservationId);
-//        if (reservation.validate()) reservationRepository.save()
-//
-//    }
-
-
-    public Optional<ReservationEntity> findReservation(Long concertDescId , Integer seatNo) {
-        return null;
     }
 }
