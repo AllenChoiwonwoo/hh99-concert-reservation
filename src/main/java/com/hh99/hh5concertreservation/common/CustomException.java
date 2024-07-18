@@ -15,7 +15,6 @@ public class CustomException extends RuntimeException{
         this.message = error.getMessage();
     }
 
-    // 내부 enum 정의
     @Getter
     @RequiredArgsConstructor
     public enum ErrorEnum {

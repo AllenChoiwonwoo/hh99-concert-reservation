@@ -14,4 +14,11 @@ public class ReservationCommand {
     private Long concertDescId;
     private Integer seatNo;
     private Integer price;
+
+    public ReservationCommand(Long userId, Long concertId, Long concertDescId, Integer seatNo) {
+        this.userId = userId;
+        this.concertId = concertId;
+        this.concertDescId = concertDescId;
+        this.seatNo = seatNo;
+    }
 }

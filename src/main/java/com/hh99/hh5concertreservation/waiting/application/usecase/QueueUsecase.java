@@ -7,6 +7,7 @@ import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;
 import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
