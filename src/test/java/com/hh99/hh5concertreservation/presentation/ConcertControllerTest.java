@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.concert.presentation;
+package com.hh99.hh5concertreservation.presentation;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;

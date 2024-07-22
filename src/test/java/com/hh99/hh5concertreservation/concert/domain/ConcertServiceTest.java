@@ -1,11 +1,15 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
+import com.hh99.hh5concertreservation.common.CustomException;
+import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
+import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,6 +38,14 @@ class ConcertServiceTest {
     Long concertDescId = 15L;
     int seatNo = 10;
     int price = 100000;
+
+    ReservationCommand command;
+
+    @BeforeEach
+    void setUp() {
+        concertService = new ConcertService(concertRepository, reservationRepository);
+        command =ReservationCommand.builder().concertDescId(concertDescId).seatNo(seatNo).build();
+    }
 
 
     @Test
@@ -77,17 +89,26 @@ class ConcertServiceTest {
     @Test
     void checkSeat() {
         //given
-        given(reservationRepository.findByConsertOptionIdAndSeatNo(concertDescId, seatNo)).willReturn(Optional.of(new ReservationEntity(userId, concertDescId, seatNo, price)));
+        given(reservationRepository.findReserveInfo(concertDescId, seatNo)).willReturn(Optional.of(new ReservationEntity(userId, concertDescId, seatNo, price)));
         //when
-        IllegalStateException illegalStateException = assertThrows(IllegalStateException.class, () -> concertService.validateSeat(concertDescId, seatNo));
-        assertEquals("이미 예약된 좌석입니다.", illegalStateException.getMessage());
+        CustomException customException = assertThrows(CustomException.class
+                , () -> concertService.validateSeat(ReservationCommand.builder().concertDescId(concertDescId).seatNo(seatNo).build()));
+        assertEquals("2001", customException.getCode());
     }
 
     @DisplayName("fail : 존제하지 않는 좌석입니다.")
     @Test
     void validateSeat() {
         //when
-        InputMismatchException e = assertThrows(InputMismatchException.class, () -> concertService.validateSeat(concertDescId, seatNo));
-        assertEquals("존제하지 않는 좌석입니다.", e.getMessage());
+        CustomException e = assertThrows(CustomException.class, () -> concertService.validateSeat(command));
+        assertEquals("2002", e.getCode());
+    }
+
+    @Test
+    void findSchedules() {
+
+        //return
+        List<ConcertScheduleInfo> concertScheduleInfos = new ArrayList<>();
+        List<ConcertEntity> concerts = concertRepository.findConcerts();
     }
 }
