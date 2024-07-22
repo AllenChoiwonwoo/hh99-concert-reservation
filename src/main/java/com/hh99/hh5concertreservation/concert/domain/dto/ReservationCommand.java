@@ -1,11 +1,10 @@
 package com.hh99.hh5concertreservation.concert.domain.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
+import lombok.*;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationCommand {
@@ -20,5 +19,9 @@ public class ReservationCommand {
         this.concertId = concertId;
         this.concertDescId = concertDescId;
         this.seatNo = seatNo;
+    }
+
+    public ReservationEntity toReservationEntity() {
+        return new ReservationEntity(userId, concertDescId, seatNo, price);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ConsertScheduler {
+public class ConcertScheduler {
     private ConcertService concertService;
 
     @Scheduled(fixedDelay = 30000)

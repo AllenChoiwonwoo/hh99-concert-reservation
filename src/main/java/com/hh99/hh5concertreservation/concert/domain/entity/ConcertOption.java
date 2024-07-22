@@ -8,14 +8,17 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table
+@Table(name = "concert_option")
 @Entity
 public class ConcertOption {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "concert_id")
-    private Long concertId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "concert_id", foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private ConcertEntity concert;
+
     @Column(name = "reservation_open_at")
     private Long reservationOpenAt;
     @Column(name = "schedule")

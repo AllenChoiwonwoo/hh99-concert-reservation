@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.concert.domain.entity;
 
+import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,7 +9,9 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@Table
+@Table(name = "reservation", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"concert_option_id", "seat_no"})
+})
 @Entity
 public class ReservationEntity {
     @Id
@@ -29,13 +32,12 @@ public class ReservationEntity {
     @Column(name = "price")
     private Integer price;
 
-//    public ReservationEntity(Long userId, Long concertDescId, Integer seatNo) {
-//        this.userId = userId;
-//        this.concertOptionId = concertDescId;
-//        this.seatNo = seatNo;
-//        this.status = 1;
-//        this.expiredAt = System.currentTimeMillis() + 1000 * 60 * 5;
-//    }
+//    @Version
+//    @ToString.Exclude
+//    @Column(name = "version")
+    private Long version;
+
+
     public ReservationEntity(Long userId, Long concertDescId, Integer seatNo, Integer price) {
         this.userId = userId;
         this.concertOptionId = concertDescId;
@@ -45,15 +47,27 @@ public class ReservationEntity {
         this.price = price;
     }
 
+
     public void setConfirm() {
         this.status = 2;
     }
 
-    public boolean validate() {
+    public boolean checkExpired() {
         if (this.status == 1 && this.expiredAt < System.currentTimeMillis()) {
             this.status = -1;
             return true;
         }
         return false;
+    }
+
+    public ReservationEntity update(ReservationCommand command) {
+        this.userId = command.getUserId();
+        this.concertId  = command.getConcertId();
+        this.concertOptionId = command.getConcertDescId();
+        this.seatNo = command.getSeatNo();
+        this.price = command.getPrice();
+        this.status = 1;
+        this.expiredAt = System.currentTimeMillis() + 1000 * 60 * 5;
+        return this;
     }
 }
