@@ -16,18 +16,17 @@ public class PointService {
     
     @Transactional
     public PointResult charge(Long userId , Long amount) {
-        UserPointEntity userPoint = pointRepository.addPoint(userId, amount);
+        UserPointEntity userPoint = pointRepository.save(findPoint(userId).addPoint(amount));
         return new PointResult(userPoint.getUserId(), userPoint.getBalance());
     }
     
     public PointResult getPoint(Long userId) {
-        UserPointEntity point = pointRepository.findPoint(userId);
+        UserPointEntity point = findPoint(userId);
         return new PointResult(point.getUserId(), point.getBalance());
     }
 
     public UserPointEntity subtractPoint(Long userId, Long price) {
-        UserPointEntity point = findPoint(userId);
-        UserPointEntity result = pointRepository.save(point.subtract(price));
+        UserPointEntity result = pointRepository.save(findPoint(userId).subtract(price));
         return result;
     }
     public UserPointEntity findPoint(Long userId) {

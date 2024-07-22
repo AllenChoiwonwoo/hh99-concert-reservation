@@ -5,12 +5,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Component
 public interface PointRepository {
-    
-    UserPointEntity addPoint(Long userId , Long amount);
-    
-    UserPointEntity findPoint(Long userId);
 
     UserPointEntity save(UserPointEntity subtract);
 
