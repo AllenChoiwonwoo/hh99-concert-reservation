@@ -7,8 +7,6 @@ import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @RequiredArgsConstructor
 public class QueueService {
@@ -35,9 +33,9 @@ public class QueueService {
         return tokenRepo.findByToken(tokenStr).isPresent();
     }
 
-    public void expireToken(Long tokenId) {
-        TokenEntity token = tokenRepo.findById(tokenId);
-        tokenRepo.save(token.setExpire());
+    public void expireToken(Long userId) {
+        TokenEntity token = tokenRepo.findByUserId(userId);
+        tokenRepo.save(token.setExpire()); // FIXME : 이부분을 repo 로 옮길 수 있을것 같지만, 비즈니스 로직 같아서 놔둠 , 이게 맞나?
     }
     
     public void expireInactiveToken() {
