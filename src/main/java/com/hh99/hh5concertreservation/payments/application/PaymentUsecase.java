@@ -7,6 +7,7 @@ import com.hh99.hh5concertreservation.payments.application.dto.PaymentResult;
 import com.hh99.hh5concertreservation.payments.domain.PaymentEntity;
 import com.hh99.hh5concertreservation.payments.domain.PaymentService;
 import com.hh99.hh5concertreservation.user.domain.PointService;
+import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +19,7 @@ public class PaymentUsecase {
     private final PaymentService paymentService;
 //    private final UserService userService;
     private final PointService pointService;
+    private final QueueService queueService;
 
     @Transactional
     public PaymentResult pay(PaymentCommand command) {
@@ -26,6 +28,7 @@ public class PaymentUsecase {
         ReservationEntity reservationEntity = concertService.confirmReservation(reservation);
         pointService.subtractPoint(command.getUserId(), price);
         PaymentEntity payment = paymentService.savePayment(reservationEntity, price);
+        queueService.expireToken(command.getUserId());
         return new PaymentResult(payment);
     }
 }

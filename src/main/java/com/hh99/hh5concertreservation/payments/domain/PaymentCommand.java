@@ -1,4 +1,4 @@
-package com.hh99.hh5concertreservation.concert.domain.dto;
+package com.hh99.hh5concertreservation.payments.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
