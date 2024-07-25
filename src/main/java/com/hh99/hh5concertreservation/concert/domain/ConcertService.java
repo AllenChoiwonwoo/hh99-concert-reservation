@@ -9,13 +9,20 @@ import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
 import jakarta.persistence.OptimisticLockException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.*;
 
+@Slf4j
 @Component
 public class ConcertService {
     private final IConcertRepository concertRepository;
@@ -24,6 +31,10 @@ public class ConcertService {
     private final int AVAIL = 0;
     private final int TEMP_RESERVED = 1;
     private final int RESERVED = 2;
+
+    @Autowired
+    private TransactionTemplate transactionTemplate;
+
 
     public ConcertService(IConcertRepository concertRepository, IReservationRepository reservationRepository) {
         this.concertRepository = concertRepository;
@@ -45,34 +56,66 @@ public class ConcertService {
         });
         return seatState;
     }
+    private static final String YELLOW = "\033[0;33m";
+    private static final String PURPLE = "\033[0;35m";
+    private static final String CYAN = "\033[0;36m";
+    private static final String WHITE = "\033[0;37m";
+    private static final String BLACK = "\033[0;30m";
+
+    static String[] colors = {YELLOW, PURPLE, CYAN, WHITE, BLACK};
+
+    public static void logTransactionStatus(String message) {
+        boolean isActive = TransactionSynchronizationManager.isActualTransactionActive();
+        int index = (int) (Thread.currentThread().getId() % 3);
+        String newColor = colors[index];
+        log.info(newColor + " thread: "+Thread.currentThread().getId()+" TxActive: " + isActive + ", message: " + message);
+    }
 
     @Transactional
     public ReservationResult reserve(ReservationCommand command) {
+        logTransactionStatus( "1 reservation. start");
         ReservationEntity reservation = validateSeat(command);
-        try { // FIXME : 이 중복 예약 방지 예외처리는 service 에서 하는게 맞나? ,repository 에서 하는게 맞나? -> 일단 내 생각은 비즈니스 로직에서 처리하는게 맞는거 같다.
+
+        try { // FIXME : 이 중복 예약 방지 예외처리는 service 에서 하는게 맞나? ,repository 에서 하는게 맞나? -> 일단 내 생각은 비즈니스 로직에서 처리하는게 맞는거 같아요.
+            logTransactionStatus( "3 reservation. save reservation start");
             ReservationEntity saved = reservationRepository.save(reservation.update(command));
+            logTransactionStatus( "4 reservation. save reservation end");
+
             return new ReservationResult(command.getConcertId(), saved);
         }catch (DataIntegrityViolationException e) {
+            logTransactionStatus( "5. reserve. throw DataIntegrityViolationException");
             throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT3);
-        }catch (OptimisticLockException e) {
+        }catch (ObjectOptimisticLockingFailureException e) {
+            logTransactionStatus( "5. reserve. throw OptimisticLockException");
             throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT4);
         }
     }
 
     //FIXME : 로직이 뭔가 별로이다.
+//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ReservationEntity validateSeat(ReservationCommand command) {
-        if(seatState.containsKey(command.getSeatNo()) == false)
+        logTransactionStatus( "1-1 validateSeat. right seat check");
+        if(seatState.containsKey(command.getSeatNo()) == false){
+            logTransactionStatus( "1-1-1 validateSeat. throw NO_SEAT");
             throw new CustomException(CustomException.ErrorEnum.NO_SEAT);
+        }
+        logTransactionStatus( "1-2 validateSeat. reservationRepository.findReserveInfo #LOCK###");
+        Optional<ReservationEntity> reservation = reservationRepository.findReserveInfo(command.getConcertDescId(), command.getSeatNo());
 
-        Optional<ReservationEntity> reservationEntity = reservationRepository.findReserveInfo(command.getConcertDescId(), command.getSeatNo());
-        if (reservationEntity.isEmpty()){
+        logTransactionStatus( "1-5 validateSeat. check available seat ");
+
+        if (reservation.isEmpty()){
+            logTransactionStatus( "1-5-1 validateSeat. available");
             return ReservationEntity.builder().build();
         }
-        ReservationEntity entity = reservationEntity.get();
+        logTransactionStatus( "1-6 validateSeat. check reserved seat");
+        ReservationEntity entity = reservation.get();
         if (entity.getStatus() == TEMP_RESERVED || entity.getStatus() == RESERVED) { // 임시예약 || 예약확정
+            logTransactionStatus( "1-6-1 validateSeat. throw reserved seat");
             throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT2);
         }
-        return reservationEntity.get();
+        logTransactionStatus( "1-7 validateSeat. available");
+        return reservation.get();
     }
 
     public ReservationEntity findTempRevervation(Long concertDescId, Integer seatNo, Integer status) {
