@@ -27,7 +27,6 @@ public class QueueUsecase {
     }
 
     public boolean validateToken(String token) {
-        queueService.isValidate(token);
-        return false;
+        return queueService.isValidate(token);
     }
 }

@@ -21,8 +21,14 @@ public class TokenInterceptor implements HandlerInterceptor {
         String method = request.getMethod();
         String requestURI = request.getRequestURI();
 
+        if (requestURI.equals("/favicon.ico")) return true;
 
-        if (method.equals("GET") && requestURI.startsWith("/concert/scheduls")){
+        if (method.equals("GET") && requestURI.equals("/concert")){
+            return true;
+        }
+        if (requestURI.startsWith("/concert/options")) return true;
+
+        if (method.equals("GET") && requestURI.startsWith("/concert/schedules") && requestURI.startsWith("/concert/options")){
             return true;
         }
         if (requestURI.startsWith("/user")){

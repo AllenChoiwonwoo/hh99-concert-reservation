@@ -2,28 +2,24 @@ package com.hh99.hh5concertreservation.waiting.infra;
 
 import com.hh99.hh5concertreservation.waiting.domain.RepositoryInterface.ITokenRepository;
 import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
+@RequiredArgsConstructor
 public class TokenRepositoryImpl implements ITokenRepository {
+    private final TokenJpaRepository repo;
     /**
      * @param newToken
      * @return
      */
     @Override
     public TokenEntity add(TokenEntity newToken) {
-        return null;
-    }
-
-    /**
-     * @param token
-     * @return
-     */
-    @Override
-    public TokenEntity findToken(String token) {
-        return null;
+        return repo.save(newToken);
     }
 
     /**
@@ -40,7 +36,7 @@ public class TokenRepositoryImpl implements ITokenRepository {
      */
     @Override
     public Optional<TokenEntity> findByToken(String tokenStr) {
-        return Optional.empty();
+        return repo.findByToken(tokenStr);
     }
 
     /**
@@ -48,8 +44,8 @@ public class TokenRepositoryImpl implements ITokenRepository {
      * @return
      */
     @Override
-    public TokenEntity findByUserId(Long tokenId) {
-        return null;
+    public Optional<TokenEntity> findByUserId(Long tokenId) {
+        return repo.findById(tokenId);
     }
 
     /**
@@ -57,14 +53,23 @@ public class TokenRepositoryImpl implements ITokenRepository {
      */
     @Override
     public void save(TokenEntity token) {
-
+        repo.save(token);
     }
 
     /**
-     * @param currentTimeMillis
+     * @param wait
+     * @return
      */
     @Override
-    public void expireInactiveToken(long currentTimeMillis) {
+    public List<TokenEntity> findTokensByStatus(Integer wait) {
+        return repo.findAllByStatus(wait);
+    }
 
+    /**
+     * @param entities
+     */
+    @Override
+    public void saveAll(List<TokenEntity> entities) {
+        repo.saveAll(entities);
     }
 }

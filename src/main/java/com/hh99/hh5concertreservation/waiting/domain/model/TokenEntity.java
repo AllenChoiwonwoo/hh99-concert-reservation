@@ -51,4 +51,11 @@ public class TokenEntity {
         this.expiredAt = this.makeExpiredTime();
         return this;
     }
+
+    public TokenEntity checkExpired() {
+        if (expiredAt < System.currentTimeMillis()){
+            return setExpire();
+        }
+        return this;
+    }
 }

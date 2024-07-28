@@ -28,6 +28,7 @@ public class CustomException extends RuntimeException{
         TOKEN_EXPIRED("1000", "TOKEN IS EXPIRED"),
         NO_MORE_ACTIVE_TOKEN("1001", "AVAILABLE ACTIVE TOKEN IS FULL"),
         TOKEN_INACTIVE("1002", "TOKEN IS INACTIVE"),
+        NO_TOKEN("1003", "NO TOKEN"),
 
         // Concert errors
         NO_CONCERT("2000", "CONCERT DOES NOT EXIST"),
