@@ -16,7 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -71,28 +73,36 @@ public class ConcertService {
         log.info(newColor + " thread: "+Thread.currentThread().getId()+" TxActive: " + isActive + ", message: " + message);
     }
 
-    @Transactional
     public ReservationResult reserve(ReservationCommand command) {
-        logTransactionStatus( "1 reservation. start");
-        ReservationEntity reservation = validateSeat(command);
 
-        try { // FIXME : 이 중복 예약 방지 예외처리는 service 에서 하는게 맞나? ,repository 에서 하는게 맞나? -> 일단 내 생각은 비즈니스 로직에서 처리하는게 맞는거 같아요.
-            logTransactionStatus( "3 reservation. save reservation start");
-            ReservationEntity saved = reservationRepository.save(reservation.update(command));
-            logTransactionStatus( "4 reservation. save reservation end");
+        return transactionTemplate.execute(status -> {
+            try {
+                // 트랜잭션 안에서 수행할 작업
+                logTransactionStatus("1 reservation. start");
+                ReservationEntity reservation = validateSeat(command);
 
-            return new ReservationResult(command.getConcertId(), saved);
-        }catch (DataIntegrityViolationException e) {
-            logTransactionStatus( "5. reserve. throw DataIntegrityViolationException");
-            throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT3);
-        }catch (ObjectOptimisticLockingFailureException e) {
-            logTransactionStatus( "5. reserve. throw OptimisticLockException");
-            throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT4);
-        }
+                try { // FIXME : 이 중복 예약 방지 예외처리는 service 에서 하는게 맞나? ,repository 에서 하는게 맞나? -> 일단 내 생각은 비즈니스 로직에서 처리하는게 맞는거 같아요.
+                    logTransactionStatus("3 reservation. save reservation start");
+                    ReservationEntity saved = reservationRepository.save(reservation.update(command));
+                    logTransactionStatus("4 reservation. save reservation end");
+
+                    return new ReservationResult(command.getConcertId(), saved);
+                } catch (DataIntegrityViolationException e) {
+                    logTransactionStatus("5. reserve. throw DataIntegrityViolationException");
+                    throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT3);
+                } catch (ObjectOptimisticLockingFailureException e) {
+                    logTransactionStatus("5. reserve. throw OptimisticLockException");
+                    throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT4);
+                }
+            } catch (Exception e) {
+                // 예외가 발생하면 롤백
+                status.setRollbackOnly();
+                throw e; // 예외를 다시 던져서 상위에서 처리할 수 있게 함
+            }
+        });
     }
 
     //FIXME : 로직이 뭔가 별로이다.
-//    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ReservationEntity validateSeat(ReservationCommand command) {
         logTransactionStatus( "1-1 validateSeat. right seat check");
 

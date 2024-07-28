@@ -11,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -47,7 +49,7 @@ class QueueServiceTest {
     void testCheckState1() {
         TokenEntity token = new TokenEntity(waitingNumber, tokenStr, userId, 1, System.currentTimeMillis() + 60000);
         CheckStateCommand command = new CheckStateCommand(userId, waitingNumber, tokenStr, 0, System.currentTimeMillis() );
-        given(tokenRepository.findToken(command.getToken())).willReturn(token);
+        given(tokenRepository.findByToken(command.getToken())).willReturn(Optional.of(token));
         //when
         CheckStateResult result = queueService.checkState(command);
         //then
@@ -60,7 +62,7 @@ class QueueServiceTest {
         Long lastEnterTokenId = 60L;
         TokenEntity token = new TokenEntity(waitingNumber, tokenStr, userId, 0, System.currentTimeMillis() + 60000);
         CheckStateCommand command = new CheckStateCommand(userId, waitingNumber, tokenStr, 0, System.currentTimeMillis() );
-        given(tokenRepository.findToken(command.getToken())).willReturn(token);
+        given(tokenRepository.findByToken(command.getToken())).willReturn(Optional.of(token));
         given(tokenRepository.findLastEnteredTokenId()).willReturn(lastEnterTokenId);
         //when
         CheckStateResult result = queueService.checkState(command);

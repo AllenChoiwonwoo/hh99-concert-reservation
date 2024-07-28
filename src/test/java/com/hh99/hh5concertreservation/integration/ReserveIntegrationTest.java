@@ -95,6 +95,7 @@ public class ReserveIntegrationTest {
         System.out.println("시작  ( 트렌젝션 범외 : 전체 , 락 : - )");
         Long startTime = System.currentTimeMillis();
 
+
         ReservationEntity entity = ReservationEntity.builder()
                 .userId(10L)
                 .concertId(1L)
@@ -104,7 +105,16 @@ public class ReserveIntegrationTest {
                 .price(100000)
                 .status(0)
                 .build();
-        ReservationEntity saved = repository.save(entity);
+
+        ReservationEntity tempRevervation;
+        try {
+            tempRevervation = concertService.findTempRevervation(2L, 5, 1);
+            tempRevervation.setStatus(0);
+            repository.save(tempRevervation);
+        }catch (CustomException e){
+            System.out.println("������생 : " + e.getMessage());
+            tempRevervation = repository.save(entity);
+        }
 
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
@@ -135,11 +145,11 @@ public class ReserveIntegrationTest {
             e.printStackTrace();
         }
 
-        Optional<ReservationEntity> reserveInfo = repository.findReserveInfo(saved.getConcertOptionId(), saved.getSeatNo(), 1);
+        Optional<ReservationEntity> reserveInfo = repository.findReserveInfo(tempRevervation.getConcertOptionId(), tempRevervation.getSeatNo(), 1);
         logger.info("성공한 예약 정보  : "+ reserveInfo.get().toString());
         Long endTime = System.currentTimeMillis();
         System.out.println("끝 : 소요시간 : "+ (endTime - startTime));
 
-        assert saved.getUserId() != reserveInfo.get().getUserId();
+        assert tempRevervation.getUserId() != reserveInfo.get().getUserId();
     }
 }
