@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.concert.domain.entity;
 
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.ConcertOptionCommand;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +28,13 @@ public class ConcertOption {
     private Integer price;
     @Column(name = "ticket_amount")
     private Integer ticketAmount;
+
+
+    public ConcertOption(ConcertEntity concert, ConcertOptionCommand command) {
+        this.concert = concert;
+        this.reservationOpenAt = command.getReservationOpenAt();
+        this.schedule = command.getSchedule();
+        this.price = command.getPrice();
+        this.ticketAmount = command.getTicketAmount();
+    }
 }

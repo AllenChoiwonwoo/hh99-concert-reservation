@@ -92,7 +92,7 @@ public class ReserveIntegrationTest {
     @DisplayName("success 예약 동시성 테스트")
     @Test
     void success_synchronizeReserveTest() {
-        System.out.println("시작  ( 트렌젝션 범외 : 전체 , 락 : PESSIMISTIC_READ )");
+        System.out.println("시작  ( 트렌젝션 범외 : 전체 , 락 : - )");
         Long startTime = System.currentTimeMillis();
 
         ReservationEntity entity = ReservationEntity.builder()

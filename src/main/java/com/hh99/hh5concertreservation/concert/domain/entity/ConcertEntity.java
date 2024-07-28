@@ -23,4 +23,8 @@ public class ConcertEntity {
     @ToString.Exclude
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "concert", fetch = FetchType.EAGER)
     private List<ConcertOption> concertDescs;
+
+    public ConcertEntity(String name) {
+        this.name = name;
+    }
 }

@@ -12,6 +12,7 @@ import static com.hh99.hh5concertreservation.concert.domain.ConcertService.logTr
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReservationResult {
+    private Long reservationId;
     private Long concertId;
     private Long concertDescId;
     private Integer seatNo;
@@ -19,6 +20,7 @@ public class ReservationResult {
 
     public ReservationResult(Long concertId, ReservationEntity saved) {
         logTransactionStatus( "6 ReservationResult. create result");
+        this.reservationId = saved.getId();
         this.concertId = concertId;
         this.concertDescId = saved.getConcertOptionId();
         this.seatNo = saved.getSeatNo();

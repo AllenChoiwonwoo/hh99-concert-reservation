@@ -115,10 +115,10 @@ class ConcertControllerTest {
 
     @DisplayName("success : 콘서트 자리 예약 성공")
     @Test
-    void reservate() throws Exception {
+    void reserve() throws Exception {
         //given
         ReservationRequest request = new ReservationRequest(userId, concertId, concertDescId, seatNo);
-        ReservationResult result = new ReservationResult(concertId, concertDescId, seatNo, reservationState);
+        ReservationResult result = new ReservationResult(1L,concertId, concertDescId, seatNo, reservationState);
         given(concertService.reserve(any())).willReturn(result);
         //when
         ResultActions resultActions = mvc.perform(post("/concert/reservation")

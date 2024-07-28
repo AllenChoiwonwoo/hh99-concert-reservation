@@ -5,17 +5,17 @@ import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
+import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
+import com.hh99.hh5concertreservation.concert.domain.entity.ConcertOption;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
-import jakarta.persistence.OptimisticLockException;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.ConcertOptionCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -95,6 +95,7 @@ public class ConcertService {
 //    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public ReservationEntity validateSeat(ReservationCommand command) {
         logTransactionStatus( "1-1 validateSeat. right seat check");
+
         if(seatState.containsKey(command.getSeatNo()) == false){
             logTransactionStatus( "1-1-1 validateSeat. throw NO_SEAT");
             throw new CustomException(CustomException.ErrorEnum.NO_SEAT);
@@ -138,5 +139,18 @@ public class ConcertService {
     public void expireReservation() {
         List<ReservationEntity> list = reservationRepository.findRevervationsByStatus(TEMP_RESERVED);
         list.stream().filter(i -> i.checkExpired()).forEach(i -> reservationRepository.save(i));
+    }
+
+    public Long addConcert(String name) {
+        ConcertEntity concert = new ConcertEntity(name);
+        ConcertEntity save = concertRepository.save(concert);
+        return save.getId();
+    }
+
+    public Long addConcertOption(ConcertOptionCommand command) {
+        ConcertEntity concert = concertRepository.findConcertById(command.getConcertId()).orElseThrow(() -> new CustomException(CustomException.ErrorEnum.NO_CONCERT));
+        ConcertOption concertOption = new ConcertOption(concert, command);
+        ConcertOption save = concertRepository.save(concertOption);
+        return save.getId();
     }
 }
