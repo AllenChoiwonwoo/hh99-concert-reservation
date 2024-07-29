@@ -1,17 +1,17 @@
 package com.hh99.hh5concertreservation.waiting.domain.RepositoryInterface;
 
 import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface ITokenRepository {
-    TokenEntity add(TokenEntity newToken);
+    TokenEntity addToWaitList(TokenEntity newToken);
 
     Long findLastEnteredTokenId();
 
-    Optional<TokenEntity> findByToken(String tokenStr);
+    Optional<String> findByToken(String tokenStr);
 
     Optional<TokenEntity> findByUserId(Long tokenId);
 
@@ -20,4 +20,18 @@ public interface ITokenRepository {
     List<TokenEntity> findTokensByStatus(Integer wait);
 
     void saveAll(List<TokenEntity> entities);
+
+    Integer findTurnNumber(String token);
+
+    void expireFromActives(String token);
+
+    Set<String> findEnteredTokens();
+
+    void enter(String token);
+
+    List<String> findWaitings(int amount);
+
+    void addToActive(String token);
+
+    void removeFromWait(String tokenStr);
 }

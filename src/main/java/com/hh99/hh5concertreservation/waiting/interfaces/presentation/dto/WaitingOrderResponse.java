@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class WaitingOrderResponse {
     private Integer status;
-    private Long waitingCount;
+    private Integer waitingCount;
 
     public WaitingOrderResponse(CheckStateResult checkStateResult) {
         this.status = checkStateResult.getStatus();

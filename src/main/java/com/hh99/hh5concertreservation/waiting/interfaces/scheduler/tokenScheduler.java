@@ -11,8 +11,13 @@ public class tokenScheduler {
     private final QueueService queueService;
     
     
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 61000)
     public void expireInactiveToken() {
-        queueService.expireInactiveToken();
+        queueService.expireInactiveEnterToken();
+    }
+
+    @Scheduled(fixedDelay = 60000)
+    public void moveWaitingToEnter() {
+        queueService.moveWaitingToEnter();
     }
 }
