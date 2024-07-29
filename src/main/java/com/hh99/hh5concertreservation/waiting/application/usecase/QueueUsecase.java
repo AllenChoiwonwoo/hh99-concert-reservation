@@ -7,7 +7,6 @@ import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;
 import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
 import com.hh99.hh5concertreservation.waiting.domain.QueueService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,12 +16,12 @@ public class QueueUsecase {
     private final QueueService queueService;
 
     public CreateTokenResult addWaitlist(CreateTokenCommand command) {
-        TokenEntity token = queueService.add(command.getUserId());
-        return new CreateTokenResult(token);
+        String token = queueService.add(command.getUserId());
+        return new CreateTokenResult(command.getUserId(), token);
     }
 
     public CheckStateResult checkWaitingStatus(CheckStateCommand command) {
-        CheckStateResult checkStateResult = queueService.checkState(command);
+        CheckStateResult checkStateResult = queueService.checkEnterState(command);
         return checkStateResult;
     }
 

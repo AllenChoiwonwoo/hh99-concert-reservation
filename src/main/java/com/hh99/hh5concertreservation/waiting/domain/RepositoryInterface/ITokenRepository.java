@@ -7,27 +7,16 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface ITokenRepository {
-    TokenEntity addToWaitList(TokenEntity newToken);
-
-    Long findLastEnteredTokenId();
+    String addToWaitList(String newToken);
 
     Optional<String> findByToken(String tokenStr);
 
-    Optional<TokenEntity> findByUserId(Long tokenId);
-
-    void save(TokenEntity token);
-
-    List<TokenEntity> findTokensByStatus(Integer wait);
-
-    void saveAll(List<TokenEntity> entities);
 
     Integer findTurnNumber(String token);
 
     void expireFromActives(String token);
 
     Set<String> findEnteredTokens();
-
-    void enter(String token);
 
     List<String> findWaitings(int amount);
 

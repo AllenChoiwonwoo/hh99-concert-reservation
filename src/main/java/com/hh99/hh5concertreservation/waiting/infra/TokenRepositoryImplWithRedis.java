@@ -1,8 +1,6 @@
 package com.hh99.hh5concertreservation.waiting.infra;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.waiting.domain.RepositoryInterface.ITokenRepository;
-import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RScoredSortedSet;
 import org.redisson.api.RSet;
@@ -17,9 +15,6 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class TokenRepositoryImplWithRedis implements ITokenRepository {
     private final RedissonClient redissonClient;
-    private final ObjectMapper mapper;
-
-    private final TokenJpaRepository repo;
     private static final String WATI_QUEUE_KEY = "waitQueue";
     private static final String ENTER_QUEUE_KEY = "enterQueue";
 
@@ -29,19 +24,11 @@ public class TokenRepositoryImplWithRedis implements ITokenRepository {
      * @return
      */
     @Override
-    public TokenEntity addToWaitList(TokenEntity newToken) {
+    public String addToWaitList(String newToken) {
 
         RScoredSortedSet<String> sortedSet = redissonClient.getScoredSortedSet(WATI_QUEUE_KEY);
-        sortedSet.add(System.currentTimeMillis(), newToken.getToken());
+        sortedSet.add(System.currentTimeMillis(), newToken);
         return newToken;
-    }
-
-    /**
-     * @return
-     */
-    @Override
-    public Long findLastEnteredTokenId() {
-        return null;
     }
 
     /**
@@ -57,40 +44,6 @@ public class TokenRepositoryImplWithRedis implements ITokenRepository {
             return Optional.empty();
         }
         return Optional.of(tokenStr);
-    }
-
-    /**
-     * @param tokenId
-     * @return
-     */
-    @Override
-    public Optional<TokenEntity> findByUserId(Long tokenId) {
-        return repo.findById(tokenId);
-    }
-
-    /**
-     * @param token
-     */
-    @Override
-    public void save(TokenEntity token) {
-        repo.save(token);
-    }
-
-    /**
-     * @param wait
-     * @return
-     */
-    @Override
-    public List<TokenEntity> findTokensByStatus(Integer wait) {
-        return repo.findAllByStatus(wait);
-    }
-
-    /**
-     * @param entities
-     */
-    @Override
-    public void saveAll(List<TokenEntity> entities) {
-        repo.saveAll(entities);
     }
 
     /**
@@ -121,16 +74,6 @@ public class TokenRepositoryImplWithRedis implements ITokenRepository {
         RSet<String> set = redissonClient.getSet(ENTER_QUEUE_KEY);
         Set<String> strings = set.readAll();
         return strings;
-    }
-
-    /**
-     * @param token
-     */
-    @Override
-    public void enter(String token) {
-        RSet<String> set = redissonClient.getSet(ENTER_QUEUE_KEY);
-        long newExpiredAt = getNewExpiredAt();
-        boolean add = set.add(token +":"+ newExpiredAt);
     }
 
     /**

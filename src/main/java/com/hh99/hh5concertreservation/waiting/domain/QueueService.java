@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.waiting.domain;
 
+import com.hh99.hh5concertreservation.common.CustomException;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;
 import com.hh99.hh5concertreservation.waiting.domain.RepositoryInterface.ITokenRepository;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -19,19 +21,24 @@ public class QueueService {
     private final Integer WAIT = 0;
     private final Integer ENTER = 1;
 
-    public TokenEntity add(Long userId) {
+    public String add(Long userId) {
         // FIXME : 서비스 안에서 토큰엔티티를 생성하고 insert 하는게 나은가 OR 인자값 (userId, 0)만 넘기고 repositry 에서 생성해서 넣는게 나은가?
         TokenEntity newToken = new TokenEntity(userId, 0);
-        TokenEntity token = tokenRepo.addToWaitList(newToken);
+        String token = tokenRepo.addToWaitList(newToken.getToken());
         return token;
     }
 
-    public CheckStateResult checkState(CheckStateCommand command) {
-        Optional<String> token = tokenRepo.findByToken(command.getToken());
+    public CheckStateResult checkEnterState(CheckStateCommand command) {
+        Set<String> tokens = tokenRepo.findEnteredTokens();
+        Optional<String> token = tokens.stream().filter(i -> i.startsWith(command.getToken())).findFirst();
+
         if (token.isPresent()) {
             return new CheckStateResult(1, 0);
         }
         Integer number = tokenRepo.findTurnNumber(command.getToken());
+        if (Objects.isNull(number))
+            throw new CustomException(CustomException.ErrorEnum.NO_TOKEN);
+
         return new CheckStateResult(0, number);
     }
 

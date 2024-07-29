@@ -33,7 +33,7 @@ class QueueUsecaseTest {
                 .expiredAt(System.currentTimeMillis()+1000)
                 .status(1).token("token1").build();
 
-        given(queueService.add(token.getUserId())).willReturn(token);
+        given(queueService.add(token.getUserId())).willReturn(token.getToken());
 
         //when
         CreateTokenResult result = queueUsecase.addWaitlist(command);
@@ -49,7 +49,7 @@ class QueueUsecaseTest {
 //        Long count = 30L;
 //
 //        TokenEntity token = TokenEntity.builder().id(3l).token(tokenStr).status(status).build();
-//        given(queueService.checkState(tokenStr)).willReturn(token);
+//        given(queueService.checkEnterState(tokenStr)).willReturn(token);
 //        given(queueService.countWaitingPeople(token.getId())).willReturn(count);
 //
 //        // when
