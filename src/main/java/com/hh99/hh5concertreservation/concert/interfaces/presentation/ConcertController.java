@@ -1,10 +1,7 @@
 package com.hh99.hh5concertreservation.concert.interfaces.presentation;
 
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
-import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ConcertSchedulesResponse;
-import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReftSeatsResponse;
-import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReservationRequest;
-import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.ReservationResponse;
+import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.*;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.ConcertService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +17,19 @@ import java.util.Map;
 public class ConcertController {
 
     private final ConcertService concertService;
+
+    @GetMapping
+    public ResponseEntity addConcert(@RequestParam String name){
+        Long concertId = concertService.addConcert(name);
+        return ResponseEntity.ok(concertId);
+    }
+
+    @PostMapping("/options")
+    public ResponseEntity addConcertOption(@RequestBody CreateConcertOptionReq req){
+        ConcertOptionCommand command = req.toCommand();
+        Long concertOptionId = concertService.addConcertOption(command);
+        return ResponseEntity.ok(concertOptionId);
+    }
 
     @GetMapping("/schedules")
     public ResponseEntity findSchedule(@RequestParam Long concertId){

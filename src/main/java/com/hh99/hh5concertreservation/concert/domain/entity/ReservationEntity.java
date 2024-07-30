@@ -32,9 +32,8 @@ public class ReservationEntity {
     @Column(name = "price")
     private Integer price;
 
-//    @Version
-//    @ToString.Exclude
-//    @Column(name = "version")
+    @Version
+    @ToString.Exclude
     private Long version;
 
 

@@ -19,11 +19,8 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
     WHERE r.concertOptionId = :concertScheduleId
     """)
     List<SeatsInfo> findReveredSeats(@Param("concertScheduleId") Long concertScheduleId);
- /*
- Read  : 265, 238  , 312
- Write : 242, 256  , 329
-  */
-    @Lock(LockModeType.PESSIMISTIC_READ)
+
+    @Lock(LockModeType.OPTIMISTIC)
     Optional<ReservationEntity> findByConcertOptionIdAndSeatNo(Long concertDescId, Integer seatNo);
 
     Optional<ReservationEntity> findByConcertOptionIdAndSeatNoAndStatus(Long concertDescId, Integer seatNo, Integer status);

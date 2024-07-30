@@ -7,11 +7,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ReservationResponse {
+    private Long reservationId;
     private Long concertId;
     private Long concertDescId;
     private Integer seatNo;
     private Integer reservationState;
     public ReservationResponse(ReservationResult result) {
+        reservationId = result.getReservationId();
         this.concertId = result.getConcertId();
         concertDescId = result.getConcertDescId();
         seatNo = result.getSeatNo();

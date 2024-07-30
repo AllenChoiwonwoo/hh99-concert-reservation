@@ -1,0 +1,44 @@
+### add concert
+GET localhost:8080/concert?name=allenconcert
+
+### get Token
+POST http://localhost:8080/token
+Content-Type: application/json
+
+{
+  "userId": 999
+}
+
+### add concert option
+POST localhost:8080/concert/options
+Content-Type: application/json
+
+{
+  "concertId": 1,
+  "reservationOpenAt": "2024-10-03 13:00:00",
+  "schedule": "2024-12-25 19:00:00",
+  "price": 100000,
+  "ticketAmount": 50
+}
+
+### reserve concert
+POST localhost:8080/concert/reservation
+Content-Type: application/json
+Token: 9d5a273e-0fb6-3ebc-a825-009ee2363e2c
+
+{
+  "userId": 999,
+  "concertId": 1,
+  "concertDescId": 1,
+  "seatNo": 5
+}
+
+###
+POST https://ijhttp-examples.jetbrains.com/post
+Content-Type: application/json
+
+{
+  "id": 999,
+  "value": "content"
+}
+

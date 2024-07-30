@@ -6,7 +6,7 @@ spring:
     name: hh5-concert-reservation
   datasource:
     driver-class-name: org.h2.Driver
-    url: 'jdbc:h2:mem:testdb'
+    url: jdbc:h2:file:~/h2data
     username: username
     password: password
   h2:

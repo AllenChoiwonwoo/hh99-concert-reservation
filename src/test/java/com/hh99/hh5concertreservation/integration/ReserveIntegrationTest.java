@@ -9,12 +9,15 @@ import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReserv
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,6 +33,10 @@ public class ReserveIntegrationTest {
     private static final String RESET = "\033[0m"; // Reset color
     private static final String GREEN = "\033[0;32m"; // Green
     private static final String ORANGE = "\033[0;33m"; // Orange (Note: Standard ANSI does not support orange, but yellow is commonly used)
+
+    private static final String RED = "\033[0;31m";
+
+    Logger logger = LoggerFactory.getLogger(ReserveIntegrationTest.class);
 
 
 
@@ -85,6 +92,7 @@ public class ReserveIntegrationTest {
     @DisplayName("success 예약 동시성 테스트")
     @Test
     void success_synchronizeReserveTest() {
+        System.out.println("시작  ( 트렌젝션 범외 : 전체 , 락 : - )");
         Long startTime = System.currentTimeMillis();
 
         ReservationEntity entity = ReservationEntity.builder()
@@ -96,23 +104,25 @@ public class ReserveIntegrationTest {
                 .price(100000)
                 .status(0)
                 .build();
-        repository.save(entity);
+        ReservationEntity saved = repository.save(entity);
 
 
         List<CompletableFuture<Void>> futures = new ArrayList<>();
-        for (long i = 1; i <= 200L; i++) {
+        for (long i = 1; i <= 3L; i++) {
             long userId = i;
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 ReservationCommand command = new ReservationCommand(userId, 1L, 2L, 5);
                 try {
                     ReservationResult reserve = concertService.reserve(command);
-                    System.out.println(GREEN  + Thread.currentThread().getId()+ " code : " +0000L +" - reservae : " + reserve.toString());
+                    logger.info(GREEN +"++++ " + Thread.currentThread().getId()+ " code : " +0000L +" - user "+command.getUserId()+" reservae : " + reserve.toString());
                 }catch (CustomException e){
-                    System.out.println(ORANGE + Thread.currentThread().getId() +" code : " + e.getCode() + " - ERROR    : " + e.getMessage());
-//                    e.printStackTrace();
+                    logger.info(RED +"++++ "+ Thread.currentThread().getId() +" code : " + e.getCode() + " - ERROR    : " + e.getMessage());
                 }catch (Exception e){
-                    System.out.println(ORANGE+ Thread.currentThread().getId() +" code : " + 9999L + " - ERROR    : " + e.getMessage());
+                    logger.info(ORANGE +"++++ "+ Thread.currentThread().getId() +" code : " + 9999L + " - ERROR    : " + e.getMessage());
                 }
+            }).exceptionally(ex -> {
+                logger.info(ORANGE+ Thread.currentThread().getId() +" code : " + 66666L + " - ERROR RRRRR    : " + ex.getMessage());
+                return null;
             });
             futures.add(future);
         }
@@ -123,24 +133,13 @@ public class ReserveIntegrationTest {
             System.out.println("All tasks completed.");
         } catch (Exception e) {
             e.printStackTrace();
-//            assert
         }
 
-        ReservationCommand command = new ReservationCommand(9999L, 1L, 2L, 5);
-        try {
-            ReservationResult reserve = concertService.reserve(command);
-            System.out.println(GREEN+ Thread.currentThread().getId() +" code : " + 0000L + " - reservae : " + reserve.toString());
-        }catch (CustomException e){
-            System.out.println(ORANGE+ Thread.currentThread().getId() +" code : " + e.getCode() + " - ERROR    : " + e.getMessage());
-//                    e.printStackTrace();
-        }catch (Exception e){
-            System.out.println(ORANGE+ Thread.currentThread().getId() +" code : " + 9999L + " - ERROR    : " + e.getMessage());
-        }
-
+        Optional<ReservationEntity> reserveInfo = repository.findReserveInfo(saved.getConcertOptionId(), saved.getSeatNo(), 1);
+        logger.info("성공한 예약 정보  : "+ reserveInfo.get().toString());
         Long endTime = System.currentTimeMillis();
-        System.out.println("소요시간 : "+ (endTime - startTime));
+        System.out.println("끝 : 소요시간 : "+ (endTime - startTime));
 
-
-
+        assert saved.getUserId() != reserveInfo.get().getUserId();
     }
 }

@@ -19,7 +19,6 @@ public class ConcertRepositoryImpl implements IConcertRepository {
     private final ConcertJpaRepository concertJpaRepository;
     private final ConcertOptionJpaRepository concertOptionJpaRepository;
 
-    //    private final ConcertOptionJpaRepository concertOptionJpaRepository;
     @Override
     public List<ConcertScheduleInfo> findSchedules(Long concertId) {
         concertJpaRepository.findById(concertId);
@@ -71,9 +70,13 @@ public class ConcertRepositoryImpl implements IConcertRepository {
        return concertOptionJpaRepository.save(concertOption);
     }
 
-//    @Override
-//    public ConcertOption save(ConcertOption concertOption) {
-//        ConcertOption save = concertOptionJpaRepository.save(concertOption);
-//        return null;
-//    }
+    /**
+     * @param concertId
+     * @return
+     */
+    @Override
+    public Optional<ConcertEntity> findConcertById(Long concertId) {
+        Optional<ConcertEntity> concert = concertJpaRepository.findById(concertId);
+        return concert;
+    }
 }
