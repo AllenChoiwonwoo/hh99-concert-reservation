@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hh99.hh5concertreservation.common.CustomException;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
@@ -10,15 +11,14 @@ import com.hh99.hh5concertreservation.concert.domain.entity.ConcertOption;
 import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IConcertRepository;
 import com.hh99.hh5concertreservation.concert.domain.repositoryInterface.IReservationRepository;
+import com.hh99.hh5concertreservation.concert.infra.ConcertRedisRepository;
 import com.hh99.hh5concertreservation.concert.interfaces.presentation.ConcertOptionCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionCallbackWithoutResult;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -36,6 +36,8 @@ public class ConcertService {
 
     @Autowired
     private TransactionTemplate transactionTemplate;
+    @Autowired
+    private ConcertRedisRepository redis;
 
 
     public ConcertService(IConcertRepository concertRepository, IReservationRepository reservationRepository) {
@@ -46,16 +48,20 @@ public class ConcertService {
             seatState.put(i,AVAIL);
         }
     }
-
+    @Cacheable(value = "concert_info", key = "#concertId")
     public List<ConcertScheduleInfo> findSchedules(Long concertId) {
         List<ConcertScheduleInfo> concert = concertRepository.findSchedules(concertId);
         return concert;
     }
-    public Map<Integer, Integer> findLeftSeats(Long concertScheduleId) {
+    public Map<Integer, Integer> findLeftSeats(Long concertScheduleId) throws JsonProcessingException {
+        Optional<Map<Integer, Integer>> cache = redis.findCachedReservedSeats(concertScheduleId);
+        if (cache.isPresent()) return cache.get();
+
         List<SeatsInfo> reservedSeat = reservationRepository.findReveredSeats(concertScheduleId);
         reservedSeat.forEach(i -> {
             if (i.getState() > AVAIL) seatState.put(i.getSeatNo(), TEMP_RESERVED);
         });
+        redis.putCacheReservedSeats(concertScheduleId, seatState);
         return seatState;
     }
     private static final String YELLOW = "\033[0;33m";
@@ -85,6 +91,7 @@ public class ConcertService {
                     logTransactionStatus("3 reservation. save reservation start");
                     ReservationEntity saved = reservationRepository.save(reservation.update(command));
                     logTransactionStatus("4 reservation. save reservation end");
+                    redis.putCachedSeatReservationState(command.getConcertDescId(), command.getSeatNo());
 
                     return new ReservationResult(command.getConcertId(), saved);
                 } catch (DataIntegrityViolationException e) {
@@ -109,6 +116,10 @@ public class ConcertService {
         if(seatState.containsKey(command.getSeatNo()) == false){
             logTransactionStatus( "1-1-1 validateSeat. throw NO_SEAT");
             throw new CustomException(CustomException.ErrorEnum.NO_SEAT);
+        }
+        if(redis.findCachedSeatReservationState(command.getConcertDescId(), command.getSeatNo())){
+            logTransactionStatus( "1-1-2 validateSeat. throw RESERVED_SEAT");
+            throw new CustomException(CustomException.ErrorEnum.RESERVED_SEAT);
         }
         logTransactionStatus( "1-2 validateSeat. reservationRepository.findReserveInfo #LOCK###");
         Optional<ReservationEntity> reservation = reservationRepository.findReserveInfo(command.getConcertDescId(), command.getSeatNo());

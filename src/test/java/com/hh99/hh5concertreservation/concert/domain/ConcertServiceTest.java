@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.concert.domain;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hh99.hh5concertreservation.common.CustomException;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationCommand;
@@ -49,7 +50,7 @@ class ConcertServiceTest {
 
 
     @Test
-    void findLeftSeats() {
+    void findLeftSeats() throws JsonProcessingException {
         //given
         List<SeatsInfo> seatsInfos = new ArrayList<>();
         seatsInfos.add(new SeatsInfo(concertDescId, 0, 5));
