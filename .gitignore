@@ -25,6 +25,8 @@ out/
 .classpath
 .project
 bin/
+src/main/java/com/hh99/hh5concertreservation/test/
+src/test/java/com/hh99/hh5concertreservation/test/
 
 
 ### Intellij ###
