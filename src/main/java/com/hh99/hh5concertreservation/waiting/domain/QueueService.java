@@ -21,13 +21,23 @@ public class QueueService {
     private final Integer WAIT = 0;
     private final Integer ENTER = 1;
 
-    public String add(Long userId) {
+    /**
+     * 대기열에 추가한다.
+     * @param userId
+     * @return
+     */
+    public String addWaitingQueue(Long userId) {
         // FIXME : 서비스 안에서 토큰엔티티를 생성하고 insert 하는게 나은가 OR 인자값 (userId, 0)만 넘기고 repositry 에서 생성해서 넣는게 나은가?
         TokenEntity newToken = new TokenEntity(userId, 0);
         String token = tokenRepo.addToWaitList(newToken.getToken());
         return token;
     }
 
+    /**
+     * 대기열 상태를 확인한다.
+     * @param command
+     * @return
+     */
     public CheckStateResult checkEnterState(CheckStateCommand command) {
         Set<String> tokens = tokenRepo.findEnteredTokens();
         Optional<String> token = tokens.stream().filter(i -> i.startsWith(command.getToken())).findFirst();
@@ -54,7 +64,6 @@ public class QueueService {
     }
     
     public void expireInactiveEnterToken() {
-        // enter token 개수를 가져온다.
         Set<String> tokens = tokenRepo.findEnteredTokens();
         tokens.stream()
                 .filter(token -> System.currentTimeMillis() > Long.parseLong(token.split(":")[1]))

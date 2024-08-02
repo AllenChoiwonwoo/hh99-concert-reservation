@@ -33,7 +33,7 @@ class QueueUsecaseTest {
                 .expiredAt(System.currentTimeMillis()+1000)
                 .status(1).token("token1").build();
 
-        given(queueService.add(token.getUserId())).willReturn(token.getToken());
+        given(queueService.addWaitingQueue(token.getUserId())).willReturn(token.getToken());
 
         //when
         CreateTokenResult result = queueUsecase.addWaitlist(command);

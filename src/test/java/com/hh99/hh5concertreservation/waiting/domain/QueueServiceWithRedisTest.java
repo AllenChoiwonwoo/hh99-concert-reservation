@@ -3,7 +3,6 @@ package com.hh99.hh5concertreservation.waiting.domain;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateCommand;
 import com.hh99.hh5concertreservation.waiting.application.dto.CheckStateResult;
 import com.hh99.hh5concertreservation.waiting.domain.RepositoryInterface.ITokenRepository;
-import com.hh99.hh5concertreservation.waiting.domain.model.TokenEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RedissonClient;
@@ -25,10 +24,10 @@ class QueueServiceWithRedisTest {
     @DisplayName("Redis 에 정상적으로 들어가는지 확인")
     @Test
     void add() {
-        String add = queueService.add(19L);
-        queueService.add(20L);
-        queueService.add(21L);
-        queueService.add(22L);
+        String add = queueService.addWaitingQueue(19L);
+        queueService.addWaitingQueue(20L);
+        queueService.addWaitingQueue(21L);
+        queueService.addWaitingQueue(22L);
 
 
 

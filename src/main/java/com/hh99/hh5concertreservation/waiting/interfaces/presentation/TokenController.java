@@ -19,6 +19,11 @@ import org.springframework.web.bind.annotation.*;
 public class TokenController {
 
     private final QueueUsecase queueUsecase;
+
+    /**
+     * @param tokenRequest
+     * @return
+     */
     @PostMapping
     public ResponseEntity createToken(@RequestBody TokenRequest tokenRequest) {
         CreateTokenCommand createTokenCommand = tokenRequest.toCommand();

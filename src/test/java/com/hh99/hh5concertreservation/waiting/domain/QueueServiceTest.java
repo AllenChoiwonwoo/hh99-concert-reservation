@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -40,7 +39,7 @@ class QueueServiceTest {
         // FIXME : 인자값으로 any() 를 쓰는게 맞는가? 안쓰면
         given(tokenRepository.addToWaitList(any())).willReturn(tokenStr);
         //when
-        String result = queueService.add(userId);
+        String result = queueService.addWaitingQueue(userId);
         //then
         assert Objects.nonNull(result);
     }
