@@ -17,6 +17,7 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
     SELECT new com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo(r.concertOptionId, r.seatNo, r.status )
     FROM ReservationEntity r
     WHERE r.concertOptionId = :concertScheduleId
+    and r.status > 0
     """)
     List<SeatsInfo> findReveredSeats(@Param("concertScheduleId") Long concertScheduleId);
 
@@ -26,4 +27,6 @@ public interface ReservationJpaRepository extends JpaRepository<ReservationEntit
     Optional<ReservationEntity> findByConcertOptionIdAndSeatNoAndStatus(Long concertDescId, Integer seatNo, Integer status);
 
     List<ReservationEntity> findAllByStatus(int status);
+
+    Optional<ReservationEntity> findByConcertIdAndConcertOptionIdAndSeatNo(Long concertId, Long concertOptionId, Integer seatNo);
 }
