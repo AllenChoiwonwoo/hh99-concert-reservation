@@ -121,22 +121,25 @@
   ```
 * 비교 <br>
 * 전 
-  * 시작 : 1 s 451 ms
+  * 시작 : 4 s 480 ms
   * explain
 
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | SIMPLE | reservation\_v2 | null | ALL | null | null | null | null | 6265428 | 1 | Using where |
+| 1 | SIMPLE | reservation\_v2 | null | ALL | null | null | null | null | 6265428 | 0.1 | Using where |
+
 
 * 후
-    * 시작 : 4 s 678 ms
+    * 시작 : 302 ms
     * explain
 
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | SIMPLE | reservation\_v1 | null | ref | unique\_concert\_seat,status\_index | unique\_concert\_seat | 9 | const | 11680 | 50 | Using where |
+| 1 | SIMPLE | reservation\_v1 | null | ref | unique\_concert\_seat | unique\_concert\_seat | 9 | const | 1303 | 1 | Using where |
 
 
+* 결과
+    * 속도가 매우 빨라짐
 
 ### 2. 콘서트의 1개의 옵션의 "이선좌" 조회 {status 를 커버링 인덱스 시도}
 * 쿼리 :
@@ -167,7 +170,7 @@ and status > 0
       | 1 | SIMPLE | reservation\_v1 | null | ref | unique\_concert\_seat | unique\_concert\_seat | 9 | const | 1330 | 100 | null |
 
 * 결과
-  * 차이가 없거나, 속도가 더 떨어짐
+  * 차이가 없거나, 속도가 더 떨어짐 , 커버링 인덱스로인해 속도가 많이 빨리질거라 예상했으나 그러지 않음
 
 ### 3. 개별 콘서트 개별 좌석 조회
 * 쿼리 :
@@ -181,21 +184,23 @@ and seat_no = 249736
 * 비교 <br>
   전
     * 시작 : 1 s 451 ms
-    * explain 
+    * explain  
   
-  | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
-      | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-      | 1 | SIMPLE | reservation\_v2 | null | ALL | null | null | null | null | 6265428 | 0.1 | Using where |
+| id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | SIMPLE | reservation\_v2 | null | ALL | null | null | null | null | 6265428 | 0.1 | Using where |
 
-    후
+
+* 후
     * 시작 : 70 ms
     * explain
-    
-    | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
-      | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-      | 1 | SIMPLE | reservation\_v1 | null | const | unique\_concert\_seat | unique\_concert\_seat | 14 | const,const | 1 | 100 | null |
 
+| id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | SIMPLE | reservation\_v1 | null | const | unique\_concert\_seat | unique\_concert\_seat | 14 | const,const | 1 | 100 | null |
 
+* 결과
+    * 속도가 매우 빨리짐
 </details>
 
 <br>
