@@ -59,7 +59,7 @@ class ConcertServiceTest {
 
         given(concertRepository.findReftSeats(concertDescId)).willReturn(seatsInfos);
         //when
-        Map<Integer, Integer> result = concertService.findLeftSeats(concertDescId);
+        Map<Integer, Integer> result = concertService.findSeatsStatesBySchedule(concertDescId);
         //then
         System.out.println(result);
         assert 0 == result.get(5);

@@ -9,9 +9,6 @@ import java.util.Set;
 public interface ITokenRepository {
     String addToWaitList(String newToken);
 
-    Optional<String> findByToken(String tokenStr);
-
-
     Integer findTurnNumber(String token);
 
     void expireFromActives(String token);

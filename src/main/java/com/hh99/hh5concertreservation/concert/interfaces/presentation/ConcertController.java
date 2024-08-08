@@ -1,6 +1,5 @@
 package com.hh99.hh5concertreservation.concert.interfaces.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.hh99.hh5concertreservation.concert.domain.dto.ReservationResult;
 import com.hh99.hh5concertreservation.concert.interfaces.presentation.dto.*;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
@@ -39,8 +38,8 @@ public class ConcertController {
     }
 
     @GetMapping("/seats/state")
-    public ResponseEntity findLeftSeat(@RequestParam Long concertScheduleId) throws JsonProcessingException {
-        Map<Integer, Integer> seatsInfos = concertService.findLeftSeats(concertScheduleId);
+    public ResponseEntity findSeatsStates(@RequestParam Long concertScheduleId) {
+        Map<Integer, Integer> seatsInfos = concertService.findSeatsStatesBySchedule(concertScheduleId);
         return ResponseEntity.ok(new ReftSeatsResponse(concertScheduleId, seatsInfos));
     }
 

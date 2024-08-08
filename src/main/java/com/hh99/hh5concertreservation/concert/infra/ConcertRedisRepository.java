@@ -18,23 +18,27 @@ public class ConcertRedisRepository {
     private final RedissonClient redissonClient;
     private final ObjectMapper mapper;
 
-    private final String SEATS_STATE_MAP_KEY = "seatsState";
+    private final String SEATS_STATE_MAP_KEY = "seatsStateMap";
     private final String SEAT_STATE_KEY = "seatsState";
 
     private final int SEATS_STATE_TTL = 10;
     private final int SEAT_RESERVATION_STATE_TTL = 1;
 
 
-    public Optional<Map<Integer, Integer>> findCachedReservedSeats(Long concertScheduleId) {
+    public Optional<Map<Integer, Integer>> findCachedReservedSeatsByScheduleId(Long concertScheduleId) {
         RMap<Integer, Integer> map = redissonClient.getMap(SEATS_STATE_MAP_KEY + ":" + concertScheduleId);
         if (map != null) return Optional.of(map);
 
         return Optional.empty();
     }
 
-    public void putCacheReservedSeats(Long concertScheduleId, Map<Integer, Integer> seatsStateMap) throws JsonProcessingException {
+    public void putCacheReservedSeats(Long concertScheduleId, Map<Integer, Integer> seatsStateMap) {
         RBucket<String> bucket = redissonClient.getBucket(SEATS_STATE_MAP_KEY + ":" + concertScheduleId);
-        bucket.set(mapper.writeValueAsString(seatsStateMap), SEATS_STATE_TTL, TimeUnit.SECONDS);
+        try {
+            bucket.set(mapper.writeValueAsString(seatsStateMap), SEATS_STATE_TTL, TimeUnit.SECONDS);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("redis exception");
+        }
     }
 
     public Boolean findCachedSeatReservationState(Long concertDescId, Integer seatNo) {

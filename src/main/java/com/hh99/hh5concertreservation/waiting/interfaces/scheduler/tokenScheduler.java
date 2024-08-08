@@ -18,7 +18,7 @@ public class tokenScheduler {
      * 주기 : 1분
      */
     @Scheduled(fixedDelay = 61000)
-    public void expireInactiveToken() {
+    public void expireActiveToken() {
         queueService.expireInactiveEnterToken();
     }
 

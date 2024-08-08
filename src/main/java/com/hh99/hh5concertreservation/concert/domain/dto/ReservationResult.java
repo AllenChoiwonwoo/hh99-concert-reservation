@@ -19,7 +19,7 @@ public class ReservationResult {
     private Integer reservationState;
 
     public ReservationResult(Long concertId, ReservationEntity saved) {
-        logTransactionStatus( "6 ReservationResult. create result");
+//        logTransactionStatus( "6 ReservationResult. create result");
         this.reservationId = saved.getId();
         this.concertId = concertId;
         this.concertDescId = saved.getConcertOptionId();

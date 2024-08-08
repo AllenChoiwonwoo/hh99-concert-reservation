@@ -32,21 +32,6 @@ public class TokenRepositoryImplWithRedis implements ITokenRepository {
     }
 
     /**
-     * @param tokenStr
-     * @return
-     */
-    @Override
-    // active 에 있는지 확인
-    public Optional<String> findByToken(String tokenStr) {
-        RSet<String> set = redissonClient.getSet(ENTER_QUEUE_KEY);
-        boolean contains = set.contains(tokenStr);
-        if (!contains) {
-            return Optional.empty();
-        }
-        return Optional.of(tokenStr);
-    }
-
-    /**
      * @param token
      * @return
      */
