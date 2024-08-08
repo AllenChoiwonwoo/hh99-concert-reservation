@@ -43,4 +43,8 @@ public class QueueUsecase {
     public boolean validateToken(String token) {
         return queueService.isValidate(token);
     }
+
+    public void expireToken(String token) {
+        queueService.expireTokenFromActive(token);
+    }
 }

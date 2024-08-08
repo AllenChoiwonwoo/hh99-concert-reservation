@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PaymentService {
-    private final IPaymentRepository IPaymentRepository;
+    private final PaymentRepository paymentRepository;
     public PaymentEntity savePayment(ReservationEntity reservationEntity, Long price) {
         PaymentEntity paymentEntity = PaymentEntity.createActivePaymanet(reservationEntity.getUserId(), reservationEntity.getId(), price);
-//        PaymentEntity paymentEntity = PaymentEntity.builder()
-//                .userId(reservationEntity.getUserId()).status(2).reservationId(reservationEntity.getId()).amount(price).build();
-        PaymentEntity payment = IPaymentRepository.save(paymentEntity);
+        PaymentEntity payment = paymentRepository.save(paymentEntity);
         return payment;
+    }
+
+    public void sendPaymentData(PaymentEntity event) {
+        paymentRepository.sendPaymentData(event);
     }
 }
