@@ -1,9 +1,9 @@
-package com.hh99.hh5concertreservation.payments.presentation;
+package com.hh99.hh5concertreservation.payments.interfaces.presentation;
 
 import com.hh99.hh5concertreservation.payments.application.PaymentUsecase;
 import com.hh99.hh5concertreservation.payments.application.dto.PaymentResult;
-import com.hh99.hh5concertreservation.payments.presentation.dto.PaymentRequest;
-import com.hh99.hh5concertreservation.payments.presentation.dto.PaymentResponse;
+import com.hh99.hh5concertreservation.payments.interfaces.presentation.dto.PaymentRequest;
+import com.hh99.hh5concertreservation.payments.interfaces.presentation.dto.PaymentResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

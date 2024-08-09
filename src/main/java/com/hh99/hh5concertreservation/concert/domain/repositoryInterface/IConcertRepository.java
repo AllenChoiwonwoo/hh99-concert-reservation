@@ -25,4 +25,6 @@ public interface IConcertRepository {
     ConcertOption save(ConcertOption concertOption);
 
     Optional<ConcertEntity> findConcertById(Long concertId);
+
+    ConcertOption findConcertOptionById(Long concertOptionId);
 }
