@@ -8,11 +8,7 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class CheckStateResult {
-    private Integer status;
-    private Long waitingCount;
+    private Integer status; // 0 기달, 1 입장
+    private Integer waitingCount;
 
-    public CheckStateResult(Long waitingNumber, Long lastEnteredWaitingNumber) {
-        this.status = 0; // 대기중
-        this.waitingCount = waitingNumber - lastEnteredWaitingNumber;
-    }
 }

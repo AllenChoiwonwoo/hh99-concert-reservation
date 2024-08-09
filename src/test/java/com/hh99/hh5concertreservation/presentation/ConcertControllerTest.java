@@ -95,7 +95,7 @@ class ConcertControllerTest {
         reservationState.put(3, 1);
         reservationState.put(5, 1);
 
-        given(concertService.findLeftSeats(concertDescId)).willReturn(reservationState);
+        given(concertService.findSeatsStatesBySchedule(concertDescId)).willReturn(reservationState);
 
         //when
         ResultActions resultActions = mvc.perform(get("/concert/seats/state")

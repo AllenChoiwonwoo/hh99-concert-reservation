@@ -5,14 +5,29 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+/**
+ * The type Token scheduler.
+ */
 @Component
 @RequiredArgsConstructor
 public class tokenScheduler {
     private final QueueService queueService;
-    
-    
-    @Scheduled(fixedDelay = 1000)
-    public void expireInactiveToken() {
-        queueService.expireInactiveToken();
+
+    /**
+     * 만료된 active 토큰을 제거한다.
+     * 주기 : 1분
+     */
+    @Scheduled(fixedDelay = 61000)
+    public void expireActiveToken() {
+        queueService.expireInactiveEnterToken();
+    }
+
+    /**
+     * 대기열에서 선순위 N명을 활성 상태로 변경한다.
+     * 주기 : 1분
+     */
+    @Scheduled(fixedDelay = 60000)
+    public void moveWaitingToEnter() {
+        queueService.moveWaitingToEnter();
     }
 }

@@ -1,5 +1,6 @@
 package com.hh99.hh5concertreservation.concert.infra;
 
+import com.hh99.hh5concertreservation.common.CustomException;
 import com.hh99.hh5concertreservation.concert.domain.dto.ConcertScheduleInfo;
 import com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo;
 import com.hh99.hh5concertreservation.concert.domain.entity.ConcertEntity;
@@ -57,6 +58,8 @@ public class ConcertRepositoryImpl implements IConcertRepository {
 
     @Override
     public ConcertEntity save(ConcertEntity concert) {
+        //todo:  캐시에 저장
+
         ConcertEntity save = concertJpaRepository.save(concert);
         return save;
     }
@@ -78,5 +81,15 @@ public class ConcertRepositoryImpl implements IConcertRepository {
     public Optional<ConcertEntity> findConcertById(Long concertId) {
         Optional<ConcertEntity> concert = concertJpaRepository.findById(concertId);
         return concert;
+    }
+
+    /**
+     * @param concertOptionId
+     * @return
+     */
+    @Override
+    public ConcertOption findConcertOptionById(Long concertOptionId) {
+       return concertOptionJpaRepository.findById(concertOptionId)
+               .orElseThrow(() -> new CustomException(CustomException.ErrorEnum.NO_CONCERT_OPTION));
     }
 }

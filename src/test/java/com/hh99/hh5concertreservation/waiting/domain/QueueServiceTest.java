@@ -11,7 +11,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
@@ -35,11 +39,11 @@ class QueueServiceTest {
         TokenEntity savedToken = new TokenEntity(waitingNumber, tokenStr, userId, 0, 1720594902702L);
 
         // FIXME : 인자값으로 any() 를 쓰는게 맞는가? 안쓰면
-        given(tokenRepository.add(any())).willReturn(savedToken);
+        given(tokenRepository.addToWaitList(any())).willReturn(tokenStr);
         //when
-        TokenEntity result = queueService.add(userId);
+        String result = queueService.addWaitingQueue(userId);
         //then
-        assertEquals(savedToken.getUserId(), result.getUserId());
+        assert Objects.nonNull(result);
     }
 
     @DisplayName("success : 대기순서 확인 - 입장가능")
@@ -47,9 +51,11 @@ class QueueServiceTest {
     void testCheckState1() {
         TokenEntity token = new TokenEntity(waitingNumber, tokenStr, userId, 1, System.currentTimeMillis() + 60000);
         CheckStateCommand command = new CheckStateCommand(userId, waitingNumber, tokenStr, 0, System.currentTimeMillis() );
-        given(tokenRepository.findToken(command.getToken())).willReturn(token);
+        Set<String> tmpActiveTokens = new HashSet<>();
+        tmpActiveTokens.add(tokenStr);
+        given(tokenRepository.findEnteredTokens()).willReturn(tmpActiveTokens);
         //when
-        CheckStateResult result = queueService.checkState(command);
+        CheckStateResult result = queueService.checkEnterState(command);
         //then
         assert 1 == result.getStatus();
     }
@@ -57,15 +63,14 @@ class QueueServiceTest {
     @DisplayName("success : 대기순서 확인 - 아직 기다려야한다.")
     @Test
     void testCheckState2() {
-        Long lastEnterTokenId = 60L;
-        TokenEntity token = new TokenEntity(waitingNumber, tokenStr, userId, 0, System.currentTimeMillis() + 60000);
         CheckStateCommand command = new CheckStateCommand(userId, waitingNumber, tokenStr, 0, System.currentTimeMillis() );
-        given(tokenRepository.findToken(command.getToken())).willReturn(token);
-        given(tokenRepository.findLastEnteredTokenId()).willReturn(lastEnterTokenId);
+
+        given(tokenRepository.findEnteredTokens()).willReturn(new HashSet<>());
+        given(tokenRepository.findTurnNumber(command.getToken())).willReturn(11);
         //when
-        CheckStateResult result = queueService.checkState(command);
+        CheckStateResult result = queueService.checkEnterState(command);
         //then
         assert 0 == result.getStatus();
-        assert (token.getId() - lastEnterTokenId) == result.getWaitingCount();
+        assert 11 == result.getWaitingCount();
     }
 }

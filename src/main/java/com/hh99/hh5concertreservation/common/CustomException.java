@@ -32,6 +32,7 @@ public class CustomException extends RuntimeException{
 
         // Concert errors
         NO_CONCERT("2000", "CONCERT DOES NOT EXIST"),
+        NO_CONCERT_OPTION("2006", "NO CONCERT OPTION" ),
         RESERVED_SEAT("2001", "SEAT IS ALREADY RESERVED"),
         RESERVED_SEAT2("2003", "SEAT IS ALREADY RESERVED - when select DB"),
         RESERVED_SEAT3("2004", "SEAT IS ALREADY RESERVED - when upodate DB"),
@@ -48,8 +49,8 @@ public class CustomException extends RuntimeException{
         PAYMENT_FAILED("4000", "PAYMENT FAILED"),
 
         // General errors
-        UNKNOWN_ERROR("9999", "UNKNOWN ERROR");
-
+        UNKNOWN_ERROR("9999", "UNKNOWN ERROR")
+            ;
         private final String code;
         private final String message;
     }

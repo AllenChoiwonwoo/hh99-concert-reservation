@@ -59,8 +59,8 @@ class TokenControllerTest {
     @DisplayName("success : 대기열 순번 확인 - 대기번호 200번인 유저의 요청에, 아직 100번째 라고 응답")
     @Test
     void checkState() throws Exception {
-        Long watingCount = 100l;
-        WaitingOrderRequest request = new WaitingOrderRequest(userId, 200l, "token1", 0);
+        Integer watingCount = 100;
+        WaitingOrderRequest request = new WaitingOrderRequest(userId, 200L, "token1", 0);
 //        CheckStateCommand command = CheckStateCommand.builder().build();
         CheckStateResult result = CheckStateResult.builder()
                 .waitingCount(watingCount)

@@ -22,13 +22,13 @@ public class PaymentUsecase {
     private final QueueService queueService;
 
     @Transactional
-    public PaymentResult pay(PaymentCommand command) {
-        ReservationEntity reservation = concertService.findTempRevervation(command.getConcertDescId(), command.getSeatNo(), 1);
+    public PaymentResult pay(String token, PaymentCommand command) {
+        ReservationEntity reservation = concertService.findTempRevervationOrThrow(command.getConcertDescId(), command.getSeatNo(), 1);
         Long price = concertService.findPrice(command.getConcertDescId());
         ReservationEntity reservationEntity = concertService.confirmReservation(reservation);
         pointService.subtractPoint(command.getUserId(), price);
         PaymentEntity payment = paymentService.savePayment(reservationEntity, price);
-        queueService.expireToken(command.getUserId());
+        queueService.expireTokenFromActive(token);
         return new PaymentResult(payment);
     }
 }
