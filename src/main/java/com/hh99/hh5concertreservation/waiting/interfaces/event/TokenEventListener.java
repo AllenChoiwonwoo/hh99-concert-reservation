@@ -1,11 +1,13 @@
 package com.hh99.hh5concertreservation.waiting.interfaces.event;
 
+import com.hh99.hh5concertreservation.payments.domain.event.PaymentCompleteEvent;
 import com.hh99.hh5concertreservation.waiting.application.usecase.QueueUsecase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
+
 @Component
 @RequiredArgsConstructor
 class TokenEventListener {
@@ -13,7 +15,7 @@ class TokenEventListener {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    public void expireToken(String token) {
-        queueUsecase.expireToken(token);
+    public void expireToken(PaymentCompleteEvent event) {
+        queueUsecase.expireToken(event.getToken());
     }
 }

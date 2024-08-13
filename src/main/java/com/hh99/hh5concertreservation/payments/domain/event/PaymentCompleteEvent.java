@@ -15,12 +15,14 @@ public class PaymentCompleteEvent {
     private Long reservationId;
     private Long amount;
     private Integer status;
+    private String token;
 
-    public PaymentCompleteEvent(PaymentEntity payment) {
+    public PaymentCompleteEvent(PaymentEntity payment, String token) {
         this.paymentId = payment.getId();
         this.userId = payment.getUserId();
         this.reservationId = payment.getReservationId();
         this.amount = payment.getAmount();
         this.status = payment.getStatus();
+        this.token = token;
     }
 }
