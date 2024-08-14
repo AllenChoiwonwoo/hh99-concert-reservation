@@ -14,16 +14,11 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class PaymentEventListener {
-//    private final PaymentUsecase paymentUsecase;
-//
-//    @Async
-//    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-//    public void sendPaymentData(PaymentCompleteEvent event) {
-//        paymentUsecase.sendPaymentData(new SendPaymentDataCommand(event));
-//    }
-    @KafkaListener(topics = "payment-complete", groupId = "my-group")
-    public void listen(String message) {
-        System.out.println("Received message: " + message);
-    }
+    private final PaymentUsecase paymentUsecase;
 
+    @Async
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void sendPaymentData(PaymentCompleteEvent event) {
+        paymentUsecase.sendPaymentData(new SendPaymentDataCommand(event));
+    }
 }

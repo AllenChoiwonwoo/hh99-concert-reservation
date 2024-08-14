@@ -2,12 +2,14 @@ package com.hh99.hh5concertreservation.payments.domain.event;
 
 import com.hh99.hh5concertreservation.payments.domain.PaymentEntity;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class PaymentCompleteEvent {
 
     private Long paymentId;
