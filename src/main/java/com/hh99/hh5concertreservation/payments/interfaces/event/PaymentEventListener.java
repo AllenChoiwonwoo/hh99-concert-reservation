@@ -4,6 +4,7 @@ import com.hh99.hh5concertreservation.payments.application.PaymentUsecase;
 import com.hh99.hh5concertreservation.payments.application.dto.SendPaymentDataCommand;
 import com.hh99.hh5concertreservation.payments.domain.event.PaymentCompleteEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

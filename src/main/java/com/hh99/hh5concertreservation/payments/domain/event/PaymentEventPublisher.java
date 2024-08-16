@@ -1,14 +1,8 @@
 package com.hh99.hh5concertreservation.payments.domain.event;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.stereotype.Component;
+import org.springframework.kafka.support.SendResult;
+import java.util.concurrent.CompletableFuture;
 
-@Component
-@RequiredArgsConstructor
-public class PaymentEventPublisher {
-    private final ApplicationEventPublisher eventPublisher;
-    public void success(PaymentCompleteEvent event) {
-        eventPublisher.publishEvent(event);
-    }
+public interface PaymentEventPublisher {
+    CompletableFuture<SendResult<String, String>> success(PaymentCompleteEvent event);
 }
