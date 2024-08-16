@@ -15,7 +15,7 @@ public class PaymentKafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public CompletableFuture<SendResult<String, String>> sendMessage(String topic, String message) {
-        return kafkaTemplate.send(topic, message);
+    public CompletableFuture<SendResult<String, String>> sendMessage(String topic, Long key, String message) {
+        return kafkaTemplate.send(topic, key.toString(), message);
     }
 }

@@ -22,11 +22,32 @@ public class PaymentCompleteEventEntity {
     private Long createdAt;
     @Column(name = "message")
     private String message;
+    @Column(name = "del_yn")
+    private Character delYn = 'N';
 
     public PaymentCompleteEventEntity(Long paymentId, String message, Integer eventState) {
         this.status = eventState;
         this.paymentId = paymentId;
         this.createdAt = System.currentTimeMillis();
         this.message = message;
+    }
+
+    public static PaymentCompleteEventEntity createInit(Long paymentId, String message) {
+        return PaymentCompleteEventEntity.builder()
+                .status(0) // init
+                .paymentId(paymentId)
+                .createdAt(System.currentTimeMillis())
+                .message(message)
+                .build();
+    }
+
+    public PaymentCompleteEventEntity published() {
+        this.status = 1;
+        return this;
+    }
+
+    public PaymentCompleteEventEntity setDelete() {
+        this.setDelYn('Y');
+        return this;
     }
 }

@@ -1,6 +1,9 @@
 package com.hh99.hh5concertreservation.payments.domain.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.payments.domain.PaymentEntity;
+import com.hh99.hh5concertreservation.payments.infra.PaymentCompleteEventEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,5 +29,19 @@ public class PaymentCompleteEvent {
         this.amount = payment.getAmount();
         this.status = payment.getStatus();
         this.token = token;
+    }
+
+    public PaymentCompleteEvent(PaymentCompleteEventEntity entity, ObjectMapper mapper) {
+        try {
+            PaymentCompleteEvent paymentCompleteEvent = mapper.readValue(entity.getMessage(), this.getClass());
+            this.paymentId = paymentCompleteEvent.getPaymentId();
+            this.userId = paymentCompleteEvent.getUserId();
+            this.reservationId = paymentCompleteEvent.getReservationId();
+            this.amount = paymentCompleteEvent.getAmount();
+            this.status = paymentCompleteEvent.getStatus();
+            this.token = paymentCompleteEvent.getToken();
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
