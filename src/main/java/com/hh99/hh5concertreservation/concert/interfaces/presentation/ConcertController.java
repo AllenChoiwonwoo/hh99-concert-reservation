@@ -38,7 +38,7 @@ public class ConcertController {
     }
 
     @GetMapping("/seats/state")
-    public ResponseEntity findSeatsStates(@RequestParam Long concertScheduleId) {
+    public ResponseEntity findSeatsStates(@RequestParam("concert_schedule_id") Long concertScheduleId) {
         Map<Integer, Integer> seatsInfos = concertService.findSeatsStatesBySchedule(concertScheduleId);
         return ResponseEntity.ok(new ReftSeatsResponse(concertScheduleId, seatsInfos));
     }

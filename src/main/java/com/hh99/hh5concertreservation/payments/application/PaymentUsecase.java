@@ -5,6 +5,7 @@ import com.hh99.hh5concertreservation.concert.domain.entity.ReservationEntity;
 import com.hh99.hh5concertreservation.payments.application.dto.PaymentCommand;
 import com.hh99.hh5concertreservation.payments.application.dto.PaymentResult;
 import com.hh99.hh5concertreservation.payments.application.dto.SendPaymentDataCommand;
+import com.hh99.hh5concertreservation.payments.domain.event.PaymentCompleteOutboxManager;
 import com.hh99.hh5concertreservation.payments.domain.event.PaymentEventPublisher;
 import com.hh99.hh5concertreservation.payments.domain.event.PaymentCompleteEvent;
 import com.hh99.hh5concertreservation.payments.domain.PaymentEntity;
@@ -21,6 +22,7 @@ public class PaymentUsecase {
     private final PaymentService paymentService;
     private final PointService pointService;
     private final PaymentEventPublisher paymentEventPublisher;
+    private final PaymentCompleteOutboxManager outboxManager;
 
     @Transactional
     public PaymentResult pay(String token, PaymentCommand command) {
@@ -31,12 +33,13 @@ public class PaymentUsecase {
         PaymentEntity payment = paymentService.savePayment(reservationEntity, price);
 
         // 결제 성공시 이벤트 발행
-        paymentEventPublisher.success(new PaymentCompleteEvent(payment, token));
+        PaymentCompleteEvent event = new PaymentCompleteEvent(payment, token);
+        String message = outboxManager.setInit(event);
+        paymentEventPublisher.success(event);
         return new PaymentResult(payment);
     }
 
     public void sendPaymentData(SendPaymentDataCommand command) {
         paymentService.sendPaymentData(command.toPayment());
-
     }
 }

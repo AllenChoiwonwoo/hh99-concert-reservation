@@ -1,6 +1,7 @@
 package com.hh99.hh5concertreservation.payments.infra;
 
-import com.hh99.hh5concertreservation.payments.domain.event.PaymentCompleteOutboxManager;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hh99.hh5concertreservation.payments.domain.event.PaymentEventPublisher;
 import com.hh99.hh5concertreservation.payments.domain.event.PaymentCompleteEvent;
 import lombok.RequiredArgsConstructor;
@@ -16,17 +17,21 @@ import java.util.concurrent.CompletableFuture;
 public class PaymentEventPublisherImpl implements PaymentEventPublisher {
 
     private final PaymentKafkaProducer paymentKafkaProducer;
+    private final ObjectMapper mapper;
 
 //    private final ApplicationEventPublisher eventPublisher;
 //    public void success(PaymentCompleteEvent event) {
 //        eventPublisher.publishEvent(event);
 //    }
 
-    private final PaymentCompleteOutboxManager outboxManager;
+//    private final PaymentCompleteOutboxManager outboxManager;
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Override
-    public CompletableFuture<SendResult<String, String>> success(PaymentCompleteEvent event){
-        String message = outboxManager.setInit(event);
-        return paymentKafkaProducer.sendMessage("payment-complete",event.getPaymentId(), message);
+    public CompletableFuture<SendResult<String, String>> success(PaymentCompleteEvent event) {
+        try {
+            return paymentKafkaProducer.sendMessage("payment-complete",event.getPaymentId(), mapper.writeValueAsString(event));
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

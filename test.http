@@ -9,6 +9,15 @@ Content-Type: application/json
   "userId": 999
 }
 
+### add Token
+POST http://localhost:8080/token
+Content-Type: application/json
+
+{
+  "userId": 999
+}
+
+
 ### add concert option
 POST localhost:8080/concert/options
 Content-Type: application/json
@@ -20,6 +29,11 @@ Content-Type: application/json
   "price": 100000,
   "ticketAmount": 50
 }
+
+### find seat status
+GET localhost:8080/concert/seats/state?concert_schedule_id=2
+Content-Type: application/json
+Token: c0cb5f0f-cf23-3ab3-99c1-fcd31fff1efc
 
 ### reserve concert
 POST localhost:8080/concert/reservation

@@ -54,7 +54,7 @@ public class ConcertService {
     }
     public Map<Integer, Integer> findSeatsStatesBySchedule(Long concertScheduleId) {
         Optional<Map<Integer, Integer>> cache = redis.findCachedReservedSeatsByScheduleId(concertScheduleId);
-        if (cache.isPresent()) return cache.get();
+        if (!cache.isEmpty()) return cache.get();
 
         ConcertOption concertOption = concertRepository.findConcertOptionById(concertScheduleId);
         Map<Integer, Integer> newSeatStatus = new HashMap<>(concertOption.getTicketAmount());
