@@ -90,6 +90,6 @@ public class TokenRepositoryImplWithRedis implements ITokenRepository {
     }
 
     private long getNewExpiredAt() {
-        return System.currentTimeMillis() + (5 * 60 * 1000);
+        return System.currentTimeMillis() + (10 * 60 * 1000);
     }
 }

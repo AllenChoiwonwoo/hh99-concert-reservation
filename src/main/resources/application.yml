@@ -1,6 +1,15 @@
 server:
   port: 8080
-
+  tomcat:
+    threads:
+      max: 20
+      min-spare: 15
+#    min-spare-threads: 300
+    accept-count: -1 # 대기 큐의 최대 커넥션 수
+    max-connections: 8192  # 최대 커넥션 수
+    max-keep-alive-requests: -1
+    keep-alive-timeout: 12000
+    connection-timeout: 5s
 spring:
   data:
     redis:
@@ -14,7 +23,7 @@ spring:
     username: myuser
     password: mypassword
     hikari:
-      maximumPoolSize: 30  # 최대 커넥션 수
+      maximumPoolSize: 10  # 최대 커넥션 수
   h2:
     console:
       enabled: true

@@ -71,7 +71,7 @@ public class QueueService {
     }
 
     public void moveWaitingToEnter() {
-        List<String> waitings = tokenRepo.findWaitings(2);
+        List<String> waitings = tokenRepo.findWaitings(20);
         for (String tokenStr : waitings) {
             tokenRepo.addToActive(tokenStr);
             tokenRepo.removeFromWait(tokenStr);

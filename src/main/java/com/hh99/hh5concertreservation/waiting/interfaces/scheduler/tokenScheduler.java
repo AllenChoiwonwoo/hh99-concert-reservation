@@ -24,9 +24,9 @@ public class tokenScheduler {
 
     /**
      * 대기열에서 선순위 N명을 활성 상태로 변경한다.
-     * 주기 : 1분
+     * 주기 : 10초
      */
-    @Scheduled(fixedDelay = 60000)
+    @Scheduled(fixedDelay = 10000)
     public void moveWaitingToEnter() {
         queueService.moveWaitingToEnter();
     }
