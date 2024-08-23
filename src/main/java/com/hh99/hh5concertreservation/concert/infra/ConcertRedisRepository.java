@@ -51,4 +51,9 @@ public class ConcertRedisRepository {
         RBucket<Boolean> bucket = redissonClient.getBucket(SEAT_STATE_KEY + ":" + concertDescId + ":" + seatNo);
         bucket.set(true, SEAT_RESERVATION_STATE_TTL, TimeUnit.DAYS);
     }
+
+    public void putCachedSeatReservationStateExpired(Long concertDescId, Integer seatNo) {
+        RBucket<Boolean> bucket = redissonClient.getBucket(SEAT_STATE_KEY + ":" + concertDescId + ":" + seatNo);
+        bucket.set(false, SEAT_RESERVATION_STATE_TTL, TimeUnit.DAYS);
+    }
 }

@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 @EnableScheduling
 public class PaymentCompleteOutboxScheduler {
     private final PaymentCompleteOutboxManager outboxManager;
-    private final ObjectMapper mapper;
 
     /**
      * 전송되지 않은 이밴트 재시도

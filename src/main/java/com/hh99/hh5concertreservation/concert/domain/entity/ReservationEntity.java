@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "reservation", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"concert_option_id", "seat_no"} , name = "unique_index")
+        @UniqueConstraint(columnNames = {"concert_id","concert_option_id", "seat_no"} , name = "unique_index")
 })
 @Entity
 public class ReservationEntity {
