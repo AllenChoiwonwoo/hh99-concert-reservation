@@ -25,9 +25,9 @@ Content-Type: application/json
 {
   "concertId": 1,
   "reservationOpenAt": "2024-10-03 13:00:00",
-  "schedule": "2024-12-25 19:00:00",
+  "schedule": "2024-12-26 19:00:00",
   "price": 100000,
-  "ticketAmount": 50
+  "ticketAmount": 70
 }
 
 ### find seat status
@@ -38,13 +38,13 @@ Token: c0cb5f0f-cf23-3ab3-99c1-fcd31fff1efc
 ### reserve concert
 POST localhost:8080/concert/reservation
 Content-Type: application/json
-Token: 9d5a273e-0fb6-3ebc-a825-009ee2363e2c
+Token: 13c8ffd9-7701-3703-a701-cf8e11deac65
 
 {
-  "userId": 999,
+  "userId": 2,
   "concertId": 1,
-  "concertDescId": 1,
-  "seatNo": 5
+  "concertDescId": 2,
+  "seatNo": 6
 }
 
 ###
