@@ -54,7 +54,7 @@ public class ConcertService {
     }
     public Map<Integer, Integer> findSeatsStatesBySchedule(Long concertScheduleId) {
         Optional<Map<Integer, Integer>> cache = redis.findCachedReservedSeatsByScheduleId(concertScheduleId);
-        if (!cache.isEmpty()) return cache.get();
+        if (!cache.isEmpty() && cache.get().size() > 0) return cache.get();
 
         ConcertOption concertOption = concertRepository.findConcertOptionById(concertScheduleId);
         Map<Integer, Integer> newSeatStatus = new HashMap<>(concertOption.getTicketAmount());
@@ -160,7 +160,10 @@ public class ConcertService {
 
     public void expireReservation() {
         List<ReservationEntity> list = reservationRepository.findRevervationsByStatus(TEMP_RESERVED);
-        list.stream().filter(i -> i.checkExpired()).forEach(i -> reservationRepository.save(i));
+        list.stream().filter(i -> i.checkExpired()).forEach(i -> {
+            reservationRepository.save(i);
+            redis.putCachedSeatReservationStateExpired(i.getConcertOptionId(), i.getSeatNo());
+        });
     }
 
     public Long addConcert(String name) {

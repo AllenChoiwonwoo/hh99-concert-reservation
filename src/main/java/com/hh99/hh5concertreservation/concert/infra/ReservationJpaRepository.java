@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface ReservationJpaRepository extends JpaRepository<ReservationEntity, Long>{
 
     @Query(value = """
-    SELECT new com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo(r.concertOptionId, r.seatNo, r.status )
+    SELECT new com.hh99.hh5concertreservation.concert.domain.dto.SeatsInfo(r.concertOptionId, r.status , r.seatNo )
     FROM ReservationEntity r
     WHERE r.concertOptionId = :concertScheduleId
     and r.status > 0

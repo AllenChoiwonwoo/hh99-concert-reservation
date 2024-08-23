@@ -2,8 +2,8 @@ server:
   port: 8080
   tomcat:
     threads:
-      max: 20
-      min-spare: 15
+      max: 300
+      min-spare: 220
 #    min-spare-threads: 300
     accept-count: -1 # 대기 큐의 최대 커넥션 수
     max-connections: 8192  # 최대 커넥션 수
